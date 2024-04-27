@@ -1,10 +1,8 @@
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: monospace;
+  color: white;
+  font-weight: 100;
 }
 
 code {
@@ -14,20 +12,96 @@ code {
 .App {
   height: 100vh;
   width: 100vw;
+  background-color: black;
 }
+
+/* Login Styling */
+.loginMainContainer {
+  margin: auto;
+  width: 300px;
+  height: 200px;
+  border: 1px solid grey;
+}
+.createAccountLogInButton {
+  box-sizing: border-box;
+  height: 40px;
+  width: 50%;
+  border: 1px solid rgb(88, 88, 88);
+}
+.loginLogoImage {
+  width: 280px;
+  height: 50px;
+  filter: invert(1);
+  margin: 15px;
+}
+.loginInput {
+  background-color: black;
+  box-sizing: border-box;
+  width: 100%;
+  height: 40px;
+  border: 1px solid rgb(88, 88, 88);
+}
+
 /* Header Styling */
 .header {
   display: flex;
+  justify-content: space-between;
   background-color: rgb(0, 0, 0);
   height: 70px;
+  box-sizing: border-box;
   width: 100%;
-  outline: 1px solid rgb(112, 112, 112);
+  border-bottom: 1px solid rgb(88, 88, 88);
 }
 .logoImage {
   width: 230px;
   height: 40px;
   margin: 15px;
   filter: invert();
+}
+.userDownArrowImage {
+  width: 14px;
+  height: 14px;
+  margin: 17px;
+  margin-top: 28px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+.userAccountDropdownOptionText {
+  font-size: 14px;
+  font-weight: 100;
+  margin: 25px;
+  cursor: pointer;
+}
+.userAccountDropdownContainer {
+  background-color: #000000;
+  display: flex;
+  height: 300px;
+  width: 170px;
+  box-sizing: border-box;
+  flex-direction: column;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  border-left: 1px solid rgb(88, 88, 88);
+  z-index: 1000;
+}
+.profilePictureImage {
+  width: 40px;
+  height: 40px;
+  margin: 14px;
+  margin-right: 0px;
+}
+.userAccountDropdownNameArrowContainer {
+  display: flex;
+}
+.userAccountContainer {
+  border-left: 1px solid rgb(88, 88, 88);
+  display: flex;
+  padding-left: 10px;
+}
+.usernameText {
+  margin: 25px;
+  margin-right: 6px;
+  font-size: 17px;
+  font-weight: 100;
 }
 /* Sidebar Styling */
 .sidebar {
@@ -37,20 +111,116 @@ code {
   background-color: #000000;
   height: calc(100vh - 70px);
 }
+.sidebarMenuContainer {
+  box-sizing: border-box;
+  display: flex;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  height: 60px;
+}
+.sidebarMenuContainer:hover {
+  background-color: rgb(255, 255, 255);
+  color: black;
+}
 .sidebarMenuText {
-  color: white;
   margin: auto;
   font-size: 20px;
   width: max-content;
-  margin-top: 30px;
-  font-family: monospace;
+
+  font-size: 17px;
   font-weight: 100;
 }
 /* Content Styling */
 .content {
   float: left;
-  outline: 1px solid rgb(110, 110, 110);
+
+  box-sizing: border-box;
   height: calc(100vh - 70px);
   width: calc(100vw - 250px);
-  background-color: rgb(12, 12, 12);
+  border-left: 1px solid rgb(88, 88, 88);
+  background-color: rgb(0, 0, 0);
+}
+.myListsSeachSortContainer {
+  box-sizing: border-box;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  height: 40px;
+  width: 100%;
+  display: flex;
+  background-color: rgba(4, 4, 4, 0);
+  justify-content: space-between;
+}
+.searchBarInput {
+  height: 37px;
+  background-color: black;
+  color: white;
+  border: #000000;
+  font-size: 15px;
+  width: 500px;
+  border-right: 1px solid rgb(88, 88, 88);
+}
+.searchBarButton {
+  height: 37px;
+  display: flex;
+  justify-content: center;
+
+  background-color: black;
+  border-right: 1px solid rgb(88, 88, 88);
+  width: 100px;
+  cursor: pointer;
+}
+.searchBarContainer {
+  display: flex;
+}
+.searchBarButtonText {
+  font-weight: 100;
+  font-size: 14px;
+}
+.individualListContainer {
+  width: 400px;
+  flex-shrink: 0;
+  height: 500px;
+
+  padding: 12px;
+  box-sizing: border-box;
+  border-right: 1px solid rgb(88, 88, 88);
+  border-bottom: 1px solid rgb(88, 88, 88);
+  background-color: #000000;
+  overflow: hidden;
+}
+.individualListImage {
+  width: 370px;
+  height: 370px;
+  object-fit: cover;
+}
+.individualListTitleText {
+  font-weight: 100;
+  font-size: 15px;
+}
+.individualListDescriptionText {
+  font-size: 10px;
+  font-weight: 100;
+}
+.individualListDateText {
+  text-align: end;
+  font-size: 10px;
+  font-weight: 100;
+}
+.myListsMainContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+.sortContainer {
+  display: flex;
+  border-left: 1px solid rgb(88, 88, 88);
+  padding-left: 30px;
+}
+.sortText {
+  font-weight: 100;
+  font-size: 14px;
+}
+.sortdownArrowImage {
+  width: 12px;
+  height: 12px;
+  margin: 14px;
 }
