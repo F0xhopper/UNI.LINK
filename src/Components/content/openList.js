@@ -5,17 +5,21 @@ const OpenList = () => {
       <div className="openListInformationContainer">
         <img src={example2}></img>
         <div>
-          <h2>▶︎ Constantinople fell</h2>
-          <h2>
+          <div className="openListLikeButton">
+            <h2 className="openListLikeButtonHeart">♡</h2>{" "}
+            <h6 className="openListLikeButtonAmount">172</h6>
+          </div>
+          <h2 className="openListTitle">▶︎ Constantinople fell</h2>
+          <h2 className="openListDescription">
             {" "}
             Constantinople developed into a thriving port thanks to its prime
             geographic location between Europe and Asia and its natural harbor.
           </h2>{" "}
-          <h2> Created by Foxhopper</h2>
+          <h2 className="openListData">12/12/2024 - Foxhopper - Public</h2>
         </div>
       </div>
       <div className="openListLinksContainer">
-        <table id="listTable">
+        <table id="table">
           <thead>
             <tr>
               <th onclick="sortTable(0)">Category</th>
