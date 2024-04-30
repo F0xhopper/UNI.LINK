@@ -7,7 +7,7 @@ const OpenList = () => {
         <div>
           <div className="openListLikeButton">
             <h2 className="openListLikeButtonHeart">♡</h2>{" "}
-            <h6 className="openListLikeButtonAmount">172</h6>
+            <h6 className="openListLikeButtonAmount">232</h6>
           </div>
           <h2 className="openListTitle">▶︎ Constantinople fell</h2>
           <h2 className="openListDescription">
@@ -223,6 +223,13 @@ const OpenList = () => {
             </tr>
           </tbody>
         </table>
+      </div>{" "}
+      <div className="openListComments">
+        <div className="commentAmountContainer">
+          <h2 className="commentAmountText">456 Comments</h2>
+        </div>
+        <h2>Brian</h2>
+        <h2>This list is hittin the spot brah.</h2>
       </div>
     </div>
   );
