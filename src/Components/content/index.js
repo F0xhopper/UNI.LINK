@@ -1,7 +1,9 @@
+import { useState } from "react";
 import MyLists from "./myLists";
-
+import OpenList from "./openList";
 const Content = () => {
-    return <div className="content"><MyLists/></div>;
-}
- 
+  const [listOpen, setListOpen] = useState(true);
+  return <div className="content">{listOpen ? <OpenList /> : <MyLists />}</div>;
+};
+
 export default Content;

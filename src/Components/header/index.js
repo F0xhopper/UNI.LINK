@@ -3,7 +3,7 @@ import logo from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/UNI
 import downArrow from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/down-arrow.png";
 import profilePicture from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/profile-picture.png";
 const Header = () => {
-  const [accountDropdownVisible, setAccountDropdownVisible] = useState(false);
+  const [accountDropdownVisible, setAccountDropdownVisible] = useState(true);
   return (
     <div className="header">
       <div>
