@@ -13,7 +13,7 @@ code {
   position: absolute;
   height: 100vh;
   width: 100vw;
-  background-color: black;
+  background-color: #000000;
 }
 
 /* Login Styling */
@@ -59,7 +59,7 @@ code {
 }
 .usernameInput {
   padding: 10px;
-  background-color: black;
+  background-color: transparent;
   box-sizing: border-box;
   width: 100%;
   font-size: 17px;
@@ -69,7 +69,7 @@ code {
   border-bottom: 1px solid rgb(88, 88, 88);
 }
 .usernameInputError {
-  background-color: black;
+  background-color: transparent;
   box-sizing: border-box;
   width: 100%;
   font-size: 17px;
@@ -84,7 +84,7 @@ code {
 }
 .passwordInput {
   padding: 10px;
-  background-color: black;
+  background-color: transparent;
   box-sizing: border-box;
   width: 100%;
   font-size: 17px;
@@ -94,7 +94,7 @@ code {
   border-bottom: 1px solid rgb(88, 88, 88);
 }
 .passwordInputError {
-  background-color: black;
+  background-color: transparent;
   box-sizing: border-box;
   width: 100%;
   font-size: 17px;
@@ -111,7 +111,7 @@ code {
 .header {
   display: flex;
   justify-content: space-between;
-  background-color: rgb(0, 0, 0);
+
   height: 70px;
   box-sizing: border-box;
   width: 100%;
@@ -172,8 +172,9 @@ code {
 .sidebar {
   float: left;
   width: 250px;
-
-  background-color: #000000;
+  flex-direction: column;
+  display: flex;
+  justify-content: space-between;
   height: calc(100vh - 70px);
 }
 .sidebarMenuContainer {
@@ -183,13 +184,90 @@ code {
   border-bottom: 1px solid rgb(88, 88, 88);
   height: 60px;
 }
+.linkDropContainer {
+  margin-top: 20px;
+  border: 2px dotted rgb(88, 88, 88);
+  width: 205px;
+  height: 96px;
+  text-align: center;
+  padding-top: 70px;
+  border-radius: 10px;
+}
+.linkDepositButton {
+  border-top: 1px solid rgb(88, 88, 88);
+
+  width: 250px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 17px;
+  height: 80px;
+  padding-top: 30px;
+  margin: 0px;
+  margin-top: 20px;
+}
+.linkDepositButton:hover {
+  background-color: white;
+  color: black;
+}
+.linkDespositListSelector {
+  background-color: transparent;
+  font-family: monospace;
+  color: white;
+  width: 199px;
+  border: 0px;
+
+  padding: 10px;
+  height: 50px;
+}
+.linkDespositSelectorConfirmContainer {
+  display: flex;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  width: 100%;
+  height: max-content;
+}
+
+.linkDropConfirmButton {
+  border-left: 1px solid rgb(88, 88, 88);
+  height: 30px;
+  width: 30px;
+  cursor: pointer;
+  font-size: 25px;
+  padding: 10px;
+  text-align: center;
+}
+.linkDropConfirmButton:hover {
+  background-color: white;
+  color: black;
+}
+.linkDepositInput {
+  background-color: #000000;
+  color: white;
+  border: 1px solid rgb(88, 88, 88);
+  width: 196px;
+  height: 24px;
+  margin-top: 20px;
+}
+.linkDepositTitle {
+  text-align: center;
+  font-weight: 100;
+  font-size: 17px;
+
+  width: 100%;
+}
+.linkDepositContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 264px;
+  border-top: 1px solid rgb(88, 88, 88);
+}
 .sidebarMenuContainer:hover {
   background-color: rgb(255, 255, 255);
   color: black;
 }
 .sidebarMenuText {
   margin: auto;
-  font-size: 20px;
+
   width: max-content;
 
   font-size: 17px;
@@ -203,7 +281,6 @@ code {
   height: calc(100vh - 70px);
   width: calc(100vw - 250px);
   border-left: 1px solid rgb(88, 88, 88);
-  background-color: rgb(0, 0, 0);
 }
 .myListsSeachSortContainer {
   box-sizing: border-box;
@@ -211,7 +288,7 @@ code {
   height: 40px;
   width: 100%;
   display: flex;
-  background-color: rgba(4, 4, 4, 0);
+
   justify-content: space-between;
 }
 .searchBarInput {
@@ -325,19 +402,25 @@ code {
   position: relative;
   border-bottom: 1px solid rgb(88, 88, 88);
   height: 300px;
-  padding: 20px;
-  padding-right: 100px;
 }
-.openListLikeButton {
-  position: absolute;
-  top: 0;
-  right: 0;
+.addLinkContainer {
   display: flex;
+  border-bottom: 1px solid rgb(88, 88, 88);
 }
-.openListLikeButtonHeart {
-  margin: 10px;
+.addLinkInput {
+  background-color: transparent;
+  flex: 1;
+  border: 0px;
+  border-right: 1px solid rgb(88, 88, 88);
+}
+.addLinkButton {
+  padding: 10px;
   cursor: pointer;
-  font-size: 40px;
+  text-align: center;
+}
+.addLinkButton:hover {
+  background-color: white;
+  color: black;
 }
 .openListLikeButtonAmount {
   margin: 21px;
@@ -353,30 +436,113 @@ code {
   margin-left: 30px;
   font-size: 18px;
   font-weight: 100;
+  margin-right: 30px;
 }
 .openListData {
   margin-left: 30px;
   font-weight: 100;
   font-size: 15px;
 }
-.openListImage {
-  width: 200px;
-  height: 200px;
+.openListImageContainer {
+  border-right: 1px solid rgb(88, 88, 88);
+  display: flex;
+  padding: 20px;
+}
+.openListInformationTextContainer {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.openListInteractiveButton {
+  border-right: 1px solid rgb(88, 88, 88);
+  text-align: center;
+  cursor: pointer;
+  padding-top: 10px;
+
+  flex: 1;
+}
+.openListInteractiveButton:hover {
+  background-color: white;
+  color: black;
+}
+.opemListInteractiveContainer {
+  width: 100%;
+  height: 40px;
+  border-top: 1px solid rgb(88, 88, 88);
+  display: flex;
+  justify-content: space-between;
 }
 .commentAmountContainer {
   width: 100%;
-  height: 30px;
-
+  display: flex;
+  height: 40px;
+  border-top: 1px solid rgb(88, 88, 88);
   border-bottom: 1px solid rgb(88, 88, 88);
+}
+.createCommentInitializeButton {
+  cursor: pointer;
+  font-weight: 100;
+  font-size: 19px;
+  margin: 10px;
 }
 .commentAmountText {
   font-weight: 100;
+  font-size: 19px;
   margin: 10px;
+}
+.commentUsernameText {
+  font-weight: 100;
+  font-size: 16px;
+  margin: 10px;
+}
+.individualCommentContainer {
+  border-bottom: 1px solid rgb(88, 88, 88);
+}
+.commentsContainer {
+  height: 249px;
+  overflow-y: auto;
+}
+.createCommentinput {
+  background-color: #000000;
+  color: white;
+  height: 90px;
+  width: 100%;
+  resize: none;
+  border: 0px;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  border-right: 1px solid rgb(88, 88, 88);
+}
+.openListComments {
+  display: flex;
+  flex-direction: column;
+  height: 289px;
+}
+.createCommentButton {
+  text-align: center;
+  cursor: pointer;
+  padding-top: 27px;
+  border-bottom: 1px solid rgb(88, 88, 88);
+}
+.createCommentButton:hover {
+  background-color: white;
+  color: black;
+}
+.createCommentContainer {
+  display: flex;
+}
+.commentsContainer::-webkit-scrollbar {
+  display: none;
+}
+.commentText {
+  margin: 10px;
+  font-size: 15px;
+  font-weight: 100;
 }
 .openListLinksContainer {
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid rgb(88, 88, 88);
+
   height: max-content;
 }
 table {
@@ -391,10 +557,14 @@ th,
 td {
   padding: 10px;
   text-align: left;
-  border: 1px solid rgb(88, 88, 88);
+  border-bottom: 1px solid rgb(88, 88, 88);
   flex: 1;
+  border-right: 1px solid rgb(88, 88, 88);
 }
-
+th:last-child,
+td:last-child {
+  border-right: 0px;
+}
 thead,
 tbody,
 tfoot {
@@ -403,15 +573,19 @@ tfoot {
 }
 
 tbody {
-  height: calc(100vh - 650px);
+  height: calc(100vh - 700px);
   overflow-y: auto;
 }
 
 tr {
   display: flex;
-  flex: 1 0;
+  flex: 1;
+  cursor: pointer;
 }
-
+tr:hover {
+  background-color: white;
+  color: #000000;
+}
 tbody::-webkit-scrollbar {
   display: none;
 }

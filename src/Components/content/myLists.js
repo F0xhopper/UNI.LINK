@@ -4,7 +4,7 @@ import downArrow from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Image
 import React, { Fragment, useState } from "react";
 
 const MyLists = () => {
-  const [sortDropdownVisible, setSortDropdownVisible] = useState(true);
+  const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   return (
     <div>
       <div className="myListsSeachSortContainer">
