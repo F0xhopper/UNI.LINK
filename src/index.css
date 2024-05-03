@@ -276,7 +276,9 @@ code {
 /* Content Styling */
 .content {
   float: left;
-
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   box-sizing: border-box;
   height: calc(100vh - 70px);
   width: calc(100vw - 250px);
@@ -362,6 +364,14 @@ code {
   border-left: 1px solid rgb(88, 88, 88);
   padding-left: 20px;
 }
+.changeAccountSettingsContainer {
+  border-bottom: 1px solid rgb(88, 88, 88);
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  background-color: transparent;
+  width: calc(100vw - 254px);
+}
 .sortText {
   font-weight: 100;
   font-size: 14px;
@@ -417,33 +427,51 @@ code {
   background-color: white;
   color: #000000;
   text-align: center;
-  padding-top: 15px;
+  padding-top: 20px;
   cursor: pointer;
+}
+.createListButton {
+  border-right: 1px solid rgb(88, 88, 88);
+  padding-top: 8px;
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: 20px;
+  text-align: center;
+  cursor: pointer;
+  width: max-content;
+}
+.createListButton:hover {
+  background-color: white;
+  color: black;
 }
 .openListEditUnselectedButton {
   flex: 1;
   cursor: pointer;
   text-align: center;
   border-bottom: 1px solid rgb(88, 88, 88);
-  padding-top: 15px;
+  padding-top: 20px;
 }
 .openListEditDeleteButton {
   flex: 1;
   text-align: center;
   cursor: pointer;
-  padding-top: 15px;
+  padding-top: 20px;
 }
 .openListEditInputDescriptionName {
   text-align: center;
-  padding-top: 50px;
+  padding-top: 60px;
   border-right: 1px solid rgb(88, 88, 88);
-  width: 120px;
+  width: max-content;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .openListEditInputName {
   text-align: center;
   padding-top: 15px;
   border-right: 1px solid rgb(88, 88, 88);
-  width: 120px;
+  width: max-content;
+  padding-left: 20px;
+  padding-right: 20px;
 }
 .openListEditDeleteButton:hover,
 .openListEditDoneButton:hover {
@@ -455,7 +483,7 @@ code {
   cursor: pointer;
   border-left: 1px solid rgb(88, 88, 88);
   text-align: center;
-  padding-top: 15px;
+  padding-top: 20px;
 }
 .openListEditDescriptionInputContainer {
   display: flex;
@@ -630,6 +658,7 @@ code {
   height: 249px;
   overflow-y: auto;
 }
+
 .createCommentinput {
   background-color: #000000;
   color: white;
@@ -670,12 +699,19 @@ code {
   width: 100%;
   box-sizing: border-box;
 
-  height: max-content;
+  flex: 1;
+}
+.openListContainer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }
 table {
   border-collapse: collapse;
   overflow: hidden;
-
+  height: 100%;
+  flex: 1;
+  flex-shrink: 1;
   width: 100%;
   overflow-x: auto;
 }
@@ -700,13 +736,13 @@ tfoot {
 }
 
 tbody {
-  height: calc(100vh - 700px);
+  height: calc(100% - 35px);
   overflow-y: auto;
 }
 
 tr {
   display: flex;
-  flex: 1;
+
   cursor: pointer;
 }
 tbody tr:hover {
@@ -715,4 +751,51 @@ tbody tr:hover {
 }
 tbody::-webkit-scrollbar {
   display: none;
+}
+.accountSettingsInputNameContainer {
+  height: 47px;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  display: flex;
+}
+.accountSettingsInputName {
+  text-align: center;
+  padding-top: 15px;
+  border-right: 1px solid rgb(88, 88, 88);
+  width: max-content;
+}
+.accountSettingsInputName {
+  text-align: center;
+  padding-top: 12px;
+  border-right: 1px solid rgb(88, 88, 88);
+  width: max-content;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+.accountSettingsInput {
+  background-color: transparent;
+  color: white;
+  border: 0px;
+  flex: 1;
+}
+.accountSettingsButtonContainer {
+  display: flex;
+  flex: 1;
+}
+.accountSettingsDeleteButton {
+  flex: 1;
+  cursor: pointer;
+  text-align: center;
+  padding-top: 20px;
+}
+.accountSettingsSaveButton {
+  border-left: 1px solid rgb(88, 88, 88);
+  text-align: center;
+  padding-top: 20px;
+  cursor: pointer;
+  flex: 1;
+}
+.accountSettingsSaveButton:hover,
+.accountSettingsDeleteButton:hover {
+  background-color: white;
+  color: black;
 }

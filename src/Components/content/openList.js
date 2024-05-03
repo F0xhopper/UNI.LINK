@@ -7,8 +7,8 @@ const OpenList = () => {
   const [addingLink, setAddingLink] = useState(false);
   const [editingList, setEditingList] = useState(true);
   return (
-    <div>
-      <div>
+    <div className="openListContainer">
+      <div >
         {editingList ? (
           <div className="openListEditListContainer">
             <div className="openListEditListImageContainer">

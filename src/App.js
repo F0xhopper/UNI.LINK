@@ -6,13 +6,20 @@ import React, { useState, Fragment } from "react";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(true);
+  const [accountSettingsOpen, setAccountSettingsOpen] = useState();
   return (
     <div className="App">
       {loggedIn ? (
         <React.Fragment>
-          <Header />
+          <Header
+            accountSettingsOpen={accountSettingsOpen}
+            setAccountSettingsOpen={setAccountSettingsOpen}
+          />
           <Sidebar />
-          <Content />
+          <Content
+            accountSettingsOpen={accountSettingsOpen}
+            setAccountSettingsOpen={setAccountSettingsOpen}
+          />
         </React.Fragment>
       ) : (
         <Login />

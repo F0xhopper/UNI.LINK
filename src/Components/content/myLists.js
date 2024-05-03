@@ -9,6 +9,7 @@ const MyLists = () => {
     <div>
       <div className="myListsSeachSortContainer">
         <div className="searchBarContainer">
+          <div className="createListButton">+</div>
           <input className="searchBarInput"></input>
           <div className="searchBarButton">
             <h2 className="searchBarButtonText">Search</h2>
