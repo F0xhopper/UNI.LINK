@@ -5,48 +5,100 @@ import example1 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images
 const OpenList = () => {
   const [creatingComment, setCreatingComment] = useState(false);
   const [addingLink, setAddingLink] = useState(false);
+  const [editingList, setEditingList] = useState(true);
   return (
     <div>
-      <div className="openListInformationContainer">
-        <div className="openListImageContainer">
-          {" "}
-          <img src={example2}></img>
-        </div>
+      <div>
+        {editingList ? (
+          <div className="openListEditListContainer">
+            <div className="openListEditListImageContainer">
+              <img className="openListEditListImage" src={example2}></img>
+              <div class="openListEditListImageOverlayTextContainer">
+                <p class="openListEditListImageOverlayText">Change Image</p>
+              </div>
+            </div>
+            <div className="openListEditListOptionConainer">
+              <div className="openListEditInputContainer">
+                <div className="openListEditInputName">List Name</div>
+                <input className="openListEditInput"></input>
+              </div>
+              <div className="openListEditDescriptionInputContainer">
+                {" "}
+                <div className="openListEditInputDescriptionName">
+                  List Description
+                </div>
+                <textarea className="openListEditDescriptionInput"></textarea>
+              </div>
 
-        <div className="openListInformationTextContainer">
-          <div>
-            <h2 className="openListTitle">▶︎ Constantinople fell</h2>
-            <h2 className="openListDescription">
+              <div className="openListEditButtonContainer">
+                <div className="openListEditSelectedButton">Private</div>
+                <div className="openListEditUnselectedButton">Public</div>
+              </div>
+              <div className="openListEditButtonContainer">
+                <div className="openListEditDeleteButton">Delete</div>
+                <div
+                  className="openListEditDoneButton"
+                  onClick={() => {
+                    setEditingList(false);
+                  }}
+                >
+                  Done
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="openListInformationContainer">
+            <div className="openListImageContainer">
               {" "}
-              Constantinople developed into a thriving port thanks to its prime
-              geographic location between Europe and Asia and its natural
-              harbor.
-            </h2>{" "}
-            <h2 className="openListData">12-12-2024 - Foxhopper - Public</h2>
-          </div>
-          <div className="opemListInteractiveContainer">
-            {" "}
-            <div className="openListInteractiveButton"> Share</div>
-            <div className="openListInteractiveButton"> ♡ </div>{" "}
-            <div
-              className="openListInteractiveButton"
-              onClick={() => {
-                setCreatingComment(!creatingComment);
-              }}
-            >
-              💬
+              <img src={example2}></img>
             </div>
-            <div className="openListInteractiveButton">✎ Edit</div>{" "}
-            <div
-              className="openListInteractiveButton"
-              onClick={() => {
-                setAddingLink(!addingLink);
-              }}
-            >
-              + Add Link
+
+            <div className="openListInformationTextContainer">
+              <div>
+                <h2 className="openListTitle">▶︎ Constantinople fell</h2>
+                <h2 className="openListDescription">
+                  {" "}
+                  Constantinople developed into a thriving port thanks to its
+                  prime geographic location between Europe and Asia and its
+                  natural harbor.
+                </h2>{" "}
+                <h2 className="openListData">
+                  12-12-2024 - Foxhopper - Public
+                </h2>
+              </div>
+              <div className="opemListInteractiveContainer">
+                {" "}
+                <div className="openListInteractiveButton"> Share</div>
+                <div className="openListInteractiveButton"> ♡ </div>{" "}
+                <div
+                  className="openListInteractiveButton"
+                  onClick={() => {
+                    setCreatingComment(!creatingComment);
+                  }}
+                >
+                  💬
+                </div>
+                <div
+                  className="openListInteractiveButton"
+                  onClick={() => {
+                    setEditingList(true);
+                  }}
+                >
+                  ✎ Edit
+                </div>{" "}
+                <div
+                  className="openListInteractiveButtonLast"
+                  onClick={() => {
+                    setAddingLink(!addingLink);
+                  }}
+                >
+                  + Add Link
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="openListLinksContainer">
         <table id="table">
