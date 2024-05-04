@@ -3,7 +3,7 @@ import MyLists from "./myLists";
 import OpenList from "./openList";
 import AccountSettings from "./accountSetting";
 const Content = (props) => {
-  const [listOpen, setListOpen] = useState(false);
+  const [listOpen, setListOpen] = useState(true);
 
   return (
     <div className="content">

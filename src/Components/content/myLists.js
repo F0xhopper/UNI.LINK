@@ -7,7 +7,7 @@ const MyLists = () => {
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   return (
     <div>
-      <div className="myListsSeachSortContainer">
+      <div className="myListsCreateSearchSortContainer">
         <div className="searchBarContainer">
           <div className="createListButton">+</div>
           <input className="searchBarInput"></input>

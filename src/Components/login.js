@@ -13,6 +13,9 @@ const Login = () => {
             <input className="usernameInput" placeholder="Username"></input>
           </div>
           <div>
+            <input className="emailInput" placeholder="Email"></input>
+          </div>{" "}
+          <div>
             <input className="passwordInput" placeholder="Password"></input>
           </div>
           <div>
@@ -39,7 +42,10 @@ const Login = () => {
       ) : (
         <div>
           <div>
-            <input className="usernameInput" placeholder="Username"></input>
+            <input
+              className="usernameInput"
+              placeholder="Username or Email"
+            ></input>
           </div>
           <div>
             <input className="passwordInput" placeholder="Password"></input>
