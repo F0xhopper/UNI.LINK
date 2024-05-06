@@ -5,10 +5,10 @@ import example1 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images
 const OpenList = () => {
   const [creatingComment, setCreatingComment] = useState(false);
   const [addingLink, setAddingLink] = useState(false);
-  const [editingList, setEditingList] = useState(true);
+  const [editingList, setEditingList] = useState(false);
   return (
     <div className="openListContainer">
-      <div >
+      <div>
         {editingList ? (
           <div className="openListEditListContainer">
             <div className="openListEditListImageContainer">
@@ -54,9 +54,12 @@ const OpenList = () => {
               <img src={example2}></img>
             </div>
 
-            <div className="openListInformationTextContainer">
-              <div>
-                <h2 className="openListTitle">▶︎ Constantinople fell</h2>
+            <div className="openListInformationTextButtonContainer">
+              <div className="openListInformationTextContainer">
+                <div className="openListTitleLikesContainer">
+                  <h2 className="openListTitle">▶︎ Constantinople fell</h2>
+                  <h2 className="openListLikesText">♡ 120</h2>
+                </div>
                 <h2 className="openListDescription">
                   {" "}
                   Constantinople developed into a thriving port thanks to its
