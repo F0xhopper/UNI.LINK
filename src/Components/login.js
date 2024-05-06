@@ -3,7 +3,26 @@ import logo from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/UNI
 
 const Login = () => {
   const [creatingAccount, setCreatingAccount] = useState(false);
-
+  const handleSubmit = async (e) => {
+    try {
+      const response = await fetch("http://localhost:3049/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username: "foxhopper", password: "password" }),
+      });
+      if (response.ok) {
+        console.log("User created successfully!");
+        // Optionally, reset the form fields after successful submission
+      } else {
+        console.log("Failed to create user.");
+      }
+    } catch (error) {
+      console.error("Error creating user:", error);
+      console.log("An error occurred. Please try again later.");
+    }
+  };
   return (
     <div className="loginMainContainer">
       <img src={logo} className="loginLogoImage"></img>
@@ -59,6 +78,7 @@ const Login = () => {
               className="createAccountButton"
               onClick={() => {
                 setCreatingAccount(!creatingAccount);
+                handleSubmit();
               }}
             >
               Create Account
