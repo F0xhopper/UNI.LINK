@@ -4,7 +4,7 @@ import OpenList from "./openList";
 import AccountSettings from "./accountSetting";
 
 const Content = (props) => {
-  const [listOpen, setListOpen] = useState(false);
+  const [listOpen, setListOpen] = useState();
 
   return (
     <div className="content">
@@ -14,7 +14,7 @@ const Content = (props) => {
           accountSettingsOpen={props.accountSettingsOpen}
         />
       )}
-      {listOpen ? <OpenList /> : <MyLists />}
+      {listOpen ? <OpenList /> : <MyLists setListOpen={setListOpen} />}
     </div>
   );
 };

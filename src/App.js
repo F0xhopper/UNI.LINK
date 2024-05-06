@@ -5,7 +5,7 @@ import Login from "./Components/login";
 import React, { useState, Fragment } from "react";
 
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [loggedIn, setLoggedIn] = useState();
   const [accountSettingsOpen, setAccountSettingsOpen] = useState();
   return (
     <div className="App">
@@ -22,7 +22,7 @@ function App() {
           />
         </React.Fragment>
       ) : (
-        <Login />
+        <Login setLoggedIn={setLoggedIn} />
       )}
     </div>
   );

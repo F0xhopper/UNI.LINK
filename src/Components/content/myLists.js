@@ -5,7 +5,7 @@ import example4 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images
 import downArrow from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/down-arrow.png";
 import React, { Fragment, useState } from "react";
 
-const MyLists = () => {
+const MyLists = (props) => {
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   return (
     <div>
@@ -70,7 +70,12 @@ const MyLists = () => {
             30-3-20 - Foxhopper - 18 Links
           </h2>
         </div>{" "}
-        <div className="individualListContainer">
+        <div
+          className="individualListContainer"
+          onClick={() => {
+            props.setListOpen(true);
+          }}
+        >
           <img className="individualListImage" src={example2}></img>{" "}
           <div className="individualListTitleLikesContainer">
             {" "}
