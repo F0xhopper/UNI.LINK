@@ -10,7 +10,7 @@ const Login = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3059/login", {
+      const response = await fetch("http://localhost:3012/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -25,6 +25,8 @@ const Login = (props) => {
       }
       const data = await response.json();
       console.log(data); // Assuming the response contains userId
+      localStorage.setItem("userId", data.userId);
+
       props.setLoggedIn(true);
     } catch (error) {
       // Handle errors, e.g., display an error message to the user
@@ -47,7 +49,7 @@ const Login = (props) => {
         console.log("Passwords do not match.");
         return;
       }
-      const response = await fetch("http://localhost:3057/users", {
+      const response = await fetch("http://localhost:3012/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

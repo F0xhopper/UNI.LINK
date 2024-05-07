@@ -12,6 +12,7 @@ function App() {
       {loggedIn ? (
         <React.Fragment>
           <Header
+            setLoggedIn={setLoggedIn}
             accountSettingsOpen={accountSettingsOpen}
             setAccountSettingsOpen={setAccountSettingsOpen}
           />
