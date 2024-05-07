@@ -52,6 +52,7 @@ const OpenList = (props) => {
 
         const responseData = await response.json();
         alert(responseData.message); // Show success message
+        props.setCreatingList(false);
         console.log("List ID:", responseData.listId);
         // Optionally, redirect to another page or perform any other action
       } catch (error) {

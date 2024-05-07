@@ -3,10 +3,31 @@ import example2 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images
 import example3 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/dde3c421e5aec5523e236b5ebcede04c.jpg";
 import example4 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/d553e2fe73a9c51da337a13ab105480f.jpg";
 import downArrow from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/down-arrow.png";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 
 const MyLists = (props) => {
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
+  const [userLists, setUserLists] = useState([]);
+
+  useEffect(() => {
+    const fetchUserLists = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3013/lists/${localStorage.getItem("userId")}`
+        ); // Change the URL according to your backend API
+        if (!response.ok) {
+          throw new Error("Failed to fetch user lists");
+        }
+        const data = await response.json();
+        setUserLists(data); // Assuming the response contains an array of lists
+      } catch (error) {
+        console.error("Error fetching user lists:", error);
+      }
+    };
+
+    fetchUserLists();
+    console.log(userLists);
+  }, []);
   return (
     <div>
       <div className="myListsCreateSearchSortContainer">
@@ -32,6 +53,7 @@ const MyLists = (props) => {
               <img
                 className="sortdownArrowImage"
                 onClick={() => {
+                  console.log(userLists);
                   setSortDropdownVisible(!sortDropdownVisible);
                 }}
                 style={{
@@ -61,76 +83,31 @@ const MyLists = (props) => {
         )}
       </div>{" "}
       <div className="myListsMainContainer">
-        <div className="individualListContainerFirst">
-          <img className="individualListImage" src={example}></img>
-          <div className="individualListTitleLikesContainer">
-            {" "}
-            <h2 className="individualListTitleText">♫ Traks 4 Hoodrates </h2>
-            <h2 className="individualListTitleText">♡ 12</h2>
-          </div>
-
-          <p className="individualListDescriptionText">
-            Made for those hoodrats that cant help but to boogie.Made for those
-            hoodrats that cant help but to boogie.Made for those hoodrats that
-            cant help but to boogie.
-          </p>
-          <h2 className="individualListDateText">
-            30-3-20 - Foxhopper - 18 Links
-          </h2>
-        </div>{" "}
-        <div
-          className="individualListContainer"
-          onClick={() => {
-            props.setListOpen(true);
-          }}
-        >
-          <img className="individualListImage" src={example2}></img>{" "}
-          <div className="individualListTitleLikesContainer">
-            {" "}
-            <h2 className="individualListTitleText">
-              {" "}
-              ▶︎ Constantinople fell{" "}
-            </h2>
-            <h2 className="individualListTitleText">♡ 42</h2>
-          </div>
-          <p className="individualListDescriptionText">
-            Constantinople developed into a thriving port thanks to its prime
-            geographic location between Europe and Asia and its natural harbor.
-          </p>
-          <h2 className="individualListDateText">
-            30-3-20 - Foxhopper - 18 Links
-          </h2>
-        </div>
-        <div className="individualListContainer">
-          <img className="individualListImage" src={example3}></img>{" "}
-          <div className="individualListTitleLikesContainer">
-            {" "}
-            <h2 className="individualListTitleText">📖 Angelic Doctor </h2>
-            <h2 className="individualListTitleText">♡ 6</h2>
-          </div>
-          <p className="individualListDescriptionText">
-            Made for those hoodrats that cant help but to boogie.Made for those
-            hoodrats that cant help but to boogie.Made for those hoodrats that
-            cant help but to boogie.
-          </p>
-          <h2 className="individualListDateText">
-            30-3-20 - Foxhopper - 18 Links
-          </h2>
-        </div>{" "}
-        <div className="individualListContainer">
-          <img className="individualListImage" src={example4}></img>{" "}
-          <div className="individualListTitleLikesContainer">
-            {" "}
-            <h2 className="individualListTitleText"> ∞ Kitty3Days </h2>
-            <h2 className="individualListTitleText">♡ 366</h2>
-          </div>
-          <p className="individualListDescriptionText">
-            Cats vids for rainy day.
-          </p>
-          <h2 className="individualListDateText">
-            30-3-20 - Foxhopper - 18 Links
-          </h2>
-        </div>
+        {userLists.map((list) => {
+          return (
+            <div
+              className="individualListContainer"
+              onClick={() => {
+                props.setListOpen(list._id);
+              }}
+            >
+              <img className="individualListImage" src={list.image}></img>{" "}
+              <div className="individualListTitleLikesContainer">
+                {" "}
+                <h2 className="individualListTitleText"> {list.list_name} </h2>
+                <h2 className="individualListTitleText">
+                  ♡ {list.likes.length}
+                </h2>
+              </div>
+              <p className="individualListDescriptionText">
+                {list.list_description}
+              </p>
+              <h2 className="individualListDateText">
+                {list.created_at} - {list.links.length} Links
+              </h2>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
