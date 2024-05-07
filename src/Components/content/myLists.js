@@ -11,7 +11,15 @@ const MyLists = (props) => {
     <div>
       <div className="myListsCreateSearchSortContainer">
         <div className="searchBarContainer">
-          <div className="createListButton">+</div>
+          <div
+            className="createListButton"
+            onClick={() => {
+              props.setCreatingList(true);
+              props.setListOpen(true);
+            }}
+          >
+            +
+          </div>
           <input className="searchBarInput"></input>
           <div className="searchBarButton">
             <h2 className="searchBarButtonText">Search</h2>

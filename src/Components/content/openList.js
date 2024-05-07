@@ -2,37 +2,132 @@ import { useState } from "react";
 import example2 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/6c2844e70e7ab024197ec10a45a2d04f.jpg";
 import example1 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/34ca39ba71e3440bb6196601075e53f5.jpg";
 
-const OpenList = () => {
+const OpenList = (props) => {
   const [creatingComment, setCreatingComment] = useState(false);
   const [addingLink, setAddingLink] = useState(false);
   const [editingList, setEditingList] = useState(false);
+  const [listPublic, setListPublic] = useState(true);
+  const [listNameInput, setListNameInput] = useState();
+  const [listDescriptionInput, setListDescriptionInput] = useState();
+  const [imageFile, setImageFile] = useState(null); // State to hold the uploaded image file
+  const [imageDataUrl, setImageDataUrl] = useState(""); // State to hold the image data URL
+
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setImageFile(file);
+      setImageDataUrl(reader.result); // Set the data URL
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    if (props.creatingList) {
+      try {
+        const response = await fetch("http://localhost:3013/lists", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            userId: localStorage.getItem("userId"),
+            list_name: listNameInput,
+            list_description: listDescriptionInput,
+            public: listPublic,
+            image: imageDataUrl,
+            created_at: new Date(),
+            likes: [],
+            links: [],
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to create list");
+        }
+
+        const responseData = await response.json();
+        alert(responseData.message); // Show success message
+        console.log("List ID:", responseData.listId);
+        // Optionally, redirect to another page or perform any other action
+      } catch (error) {
+        console.error("Error creating list:", error);
+        alert("Failed to create list. Please try again.");
+      }
+    }
+  };
+
   return (
     <div className="openListContainer">
       <div>
-        {editingList ? (
+        {editingList || props.creatingList ? (
           <div className="openListEditListContainer">
             <div className="openListEditListImageContainer">
-              <img className="openListEditListImage" src={example2}></img>
+              <img className="openListEditListImage" src={imageDataUrl}></img>
               <div class="openListEditListImageOverlayTextContainer">
-                <p class="openListEditListImageOverlayText">Change Image</p>
+                <p class="openListEditListImageOverlayText">
+                  {" "}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange} // Handle image upload
+                  />{" "}
+                  {props.creatingList ? "Add Image" : "Change Image"}
+                </p>
               </div>
             </div>
             <div className="openListEditListOptionConainer">
               <div className="openListEditInputContainer">
                 <div className="openListEditInputName">List Name</div>
-                <input className="openListEditInput"></input>
+                <input
+                  className="openListEditInput"
+                  onChange={(e) => {
+                    setListNameInput(e.target.value);
+                  }}
+                ></input>
               </div>
               <div className="openListEditDescriptionInputContainer">
                 {" "}
                 <div className="openListEditInputDescriptionName">
                   List Description
                 </div>
-                <textarea className="openListEditDescriptionInput"></textarea>
+                <textarea
+                  onChange={(e) => {
+                    setListDescriptionInput(e.target.value);
+                  }}
+                  className="openListEditDescriptionInput"
+                ></textarea>
               </div>
 
               <div className="openListEditButtonContainer">
-                <div className="openListEditSelectedButton">Private</div>
-                <div className="openListEditUnselectedButton">Public</div>
+                <div
+                  className={
+                    listPublic
+                      ? "openListEditUnselectedButton"
+                      : "openListEditSelectedButton"
+                  }
+                  onClick={() => {
+                    setListPublic(!listPublic);
+                  }}
+                >
+                  Private
+                </div>
+                <div
+                  className={
+                    listPublic
+                      ? "openListEditSelectedButton"
+                      : "openListEditUnselectedButton"
+                  }
+                  onClick={() => {
+                    setListPublic(!listPublic);
+                  }}
+                >
+                  Public
+                </div>
               </div>
               <div className="openListEditButtonContainer">
                 <div className="openListEditDeleteButton">Delete</div>
@@ -40,9 +135,10 @@ const OpenList = () => {
                   className="openListEditDoneButton"
                   onClick={() => {
                     setEditingList(false);
+                    handleSubmit();
                   }}
                 >
-                  Done
+                  {props.creatingList ? "Create List" : "Done"}
                 </div>
               </div>
             </div>

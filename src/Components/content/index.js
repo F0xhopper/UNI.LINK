@@ -5,6 +5,7 @@ import AccountSettings from "./accountSetting";
 
 const Content = (props) => {
   const [listOpen, setListOpen] = useState();
+  const [creatingList, setCreatingList] = useState();
 
   return (
     <div className="content">
@@ -14,7 +15,14 @@ const Content = (props) => {
           accountSettingsOpen={props.accountSettingsOpen}
         />
       )}
-      {listOpen ? <OpenList /> : <MyLists setListOpen={setListOpen} />}
+      {listOpen ? (
+        <OpenList
+          setCreatingList={setCreatingList}
+          creatingList={creatingList}
+        />
+      ) : (
+        <MyLists setCreatingList={setCreatingList} setListOpen={setListOpen} />
+      )}
     </div>
   );
 };

@@ -14,7 +14,7 @@ const Header = (props) => {
     const userId = localStorage.getItem("userId");
 
     // Fetch user data based on user ID
-    fetch(`http://localhost:3012/users/${userId}`)
+    fetch(`http://localhost:3013/users/${userId}`)
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => console.error("Failed to fetch user data:", error));

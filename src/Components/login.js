@@ -10,7 +10,7 @@ const Login = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3012/login", {
+      const response = await fetch("http://localhost:3013/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -49,7 +49,7 @@ const Login = (props) => {
         console.log("Passwords do not match.");
         return;
       }
-      const response = await fetch("http://localhost:3012/users", {
+      const response = await fetch("http://localhost:3013/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
