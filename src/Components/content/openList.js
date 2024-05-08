@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import example2 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/6c2844e70e7ab024197ec10a45a2d04f.jpg";
 import example1 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/34ca39ba71e3440bb6196601075e53f5.jpg";
 
@@ -11,7 +11,7 @@ const OpenList = (props) => {
   const [listDescriptionInput, setListDescriptionInput] = useState();
   const [imageFile, setImageFile] = useState(null); // State to hold the uploaded image file
   const [imageDataUrl, setImageDataUrl] = useState(""); // State to hold the image data URL
-
+  const [list, setList] = useState(null);
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -61,7 +61,26 @@ const OpenList = (props) => {
       }
     }
   };
+  useEffect(() => {
+    const fetchListData = async () => {
+      try {
+        console.log(props.listOpen);
+        const response = await fetch(
+          `http://localhost:3013/list/${props.listOpen}`
+        ); // Change the URL according to your backend API
+        if (!response.ok) {
+          throw new Error("Failed to fetch user list");
+        }
+        const data = await response.json();
+        setList(data); // Assuming the response contains an array of lists
+        console.log(list);
+      } catch (error) {
+        console.error("Error fetching user lists:", error);
+      }
+    };
 
+    fetchListData();
+  }, []);
   return (
     <div className="openListContainer">
       <div>
@@ -113,6 +132,7 @@ const OpenList = (props) => {
                   }
                   onClick={() => {
                     setListPublic(!listPublic);
+                    console.log(list);
                   }}
                 >
                   Private
@@ -148,23 +168,21 @@ const OpenList = (props) => {
           <div className="openListInformationContainer">
             <div className="openListImageContainer">
               {" "}
-              <img src={example2}></img>
+              <img src={list.image}></img>
             </div>
 
             <div className="openListInformationTextButtonContainer">
               <div className="openListInformationTextContainer">
                 <div className="openListTitleLikesContainer">
-                  <h2 className="openListTitle">▶︎ Constantinople fell</h2>
-                  <h2 className="openListLikesText">♡ 120</h2>
+                  <h2 className="openListTitle">▶︎ {list.list_name}</h2>
+                  <h2 className="openListLikesText">♡ {list.likes.length}</h2>
                 </div>
                 <h2 className="openListDescription">
                   {" "}
-                  Constantinople developed into a thriving port thanks to its
-                  prime geographic location between Europe and Asia and its
-                  natural harbor.
+                  {list.list_description}
                 </h2>{" "}
                 <h2 className="openListData">
-                  12-12-2024 - Foxhopper - Public
+                  {list.created}-2024 - Foxhopper - Public
                 </h2>
               </div>
               <div className="opemListInteractiveContainer">
@@ -204,10 +222,10 @@ const OpenList = (props) => {
         <table id="table">
           <thead>
             <tr>
-              <th onclick="sortTable(0)">Title</th>
-              <th onclick="sortTable(1)">Author</th>
-              <th onclick="sortTable(2)">Type</th>
-              <th onclick="sortTable(3)">Date</th>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Type</th>
+              <th>Date</th>
             </tr>
           </thead>
 
