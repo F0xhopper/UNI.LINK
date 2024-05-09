@@ -17,6 +17,7 @@ const Content = (props) => {
       )}
       {listOpen ? (
         <OpenList
+          setListOpen={setListOpen}
           listOpen={listOpen}
           setCreatingList={setCreatingList}
           creatingList={creatingList}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import cheerio from "cheerio";
 import example2 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/6c2844e70e7ab024197ec10a45a2d04f.jpg";
 import example1 from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/34ca39ba71e3440bb6196601075e53f5.jpg";
 
@@ -12,6 +13,8 @@ const OpenList = (props) => {
   const [imageFile, setImageFile] = useState(null); // State to hold the uploaded image file
   const [imageDataUrl, setImageDataUrl] = useState(""); // State to hold the image data URL
   const [list, setList] = useState(null);
+  const [addLinkInput, setAddLinkInput] = useState();
+  const [commentInput, setCommentInput] = useState();
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -25,7 +28,88 @@ const OpenList = (props) => {
       reader.readAsDataURL(file);
     }
   };
+  const addLinkToList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/links`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            link_name: "Name of the Link", // Replace with actual values
+            link_url: addLinkInput,
+            platform: "",
+          }),
+        }
+      );
 
+      if (!response.ok) {
+        throw new Error("Failed to add link to the list");
+      }
+
+      const responseData = await response.json();
+      console.log("Link added:", responseData.message);
+      // Optionally, update the state to reflect the changes
+    } catch (error) {
+      console.error("Error adding link to the list:", error);
+      alert("Failed to add link to the list. Please try again.");
+    }
+  };
+  const addLikeToList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/like`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username: localStorage.getItem("userId") }), // Assuming username is sent in the request body
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add like to the list");
+      }
+
+      const responseData = await response.json();
+      console.log("Like added:", responseData.message);
+      // Optionally, update the state to reflect the changes
+    } catch (error) {
+      console.error("Error adding like to the list:", error);
+      alert("Failed to add like to the list. Please try again.");
+    }
+  };
+  const addCommentToList = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/comments`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user: localStorage.getItem("userId"),
+            comment: commentInput,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to add comment to the list");
+      }
+
+      const responseData = await response.json();
+      console.log("Comment added:", responseData.message);
+      // Optionally, update the state to reflect the changes
+    } catch (error) {
+      console.error("Error adding comment to the list:", error);
+      alert("Failed to add comment to the list. Please try again.");
+    }
+  };
   const handleSubmit = async (event) => {
     if (props.creatingList) {
       try {
@@ -53,7 +137,7 @@ const OpenList = (props) => {
         const responseData = await response.json();
         alert(responseData.message); // Show success message
         props.setCreatingList(false);
-        console.log("List ID:", responseData.listId);
+        props.setListOpen(responseData.listId);
         // Optionally, redirect to another page or perform any other action
       } catch (error) {
         console.error("Error creating list:", error);
@@ -80,7 +164,10 @@ const OpenList = (props) => {
     };
 
     fetchListData();
-  }, []);
+  });
+  if (!list && !props.creatingList) {
+    return <div>Loading...</div>; // Render loading indicator until data is fetched
+  }
   return (
     <div className="openListContainer">
       <div>
@@ -182,13 +269,20 @@ const OpenList = (props) => {
                   {list.list_description}
                 </h2>{" "}
                 <h2 className="openListData">
-                  {list.created}-2024 - Foxhopper - Public
+                  {list.created_at} - Foxhopper -{" "}
+                  {list.public ? "Public" : "Private"}
                 </h2>
               </div>
               <div className="opemListInteractiveContainer">
                 {" "}
                 <div className="openListInteractiveButton"> Share</div>
-                <div className="openListInteractiveButton"> ♡ </div>{" "}
+                <div
+                  className="openListInteractiveButton"
+                  onClick={addLikeToList}
+                >
+                  {" "}
+                  ♡{" "}
+                </div>{" "}
                 <div
                   className="openListInteractiveButton"
                   onClick={() => {
@@ -222,8 +316,8 @@ const OpenList = (props) => {
         <table id="table">
           <thead>
             <tr>
-              <th>Title</th>
-              <th>Author</th>
+              <th>Name</th>
+              <th>Platform</th>
               <th>Type</th>
               <th>Date</th>
             </tr>
@@ -233,138 +327,28 @@ const OpenList = (props) => {
             {" "}
             {addingLink && (
               <div className="addLinkContainer">
-                <input className="addLinkInput"></input>
-                <div className="addLinkButton">Add Link</div>
+                <input
+                  className="addLinkInput"
+                  onChange={(e) => {
+                    setAddLinkInput(e.target.value);
+                  }}
+                ></input>
+                <div className="addLinkButton" onClick={addLinkToList}>
+                  Add Link
+                </div>
               </div>
             )}
-            <tr>
-              <td>Humans</td>
-              <td>
-                <a>Clams Casino</a>
-              </td>
-              <td>Music</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Humans</td>
-              <td>
-                <a>Clams Casino</a>
-              </td>
-              <td>Video</td>
-              <td>2024-02-02</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>{" "}
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 1</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-01</td>
-            </tr>
-            <tr>
-              <td>Category 2</td>
-              <td>
-                <a href="#">Link 2</a>
-              </td>
-              <td>Type B</td>
-              <td>2024-04-15</td>
-            </tr>
-            <tr>
-              <td>Category 1</td>
-              <td>
-                <a href="#">Link 3</a>
-              </td>
-              <td>Type C</td>
-              <td>2024-04-20</td>
-            </tr>
-            <tr>
-              <td>Category 3</td>
-              <td>
-                <a href="#">Link 4</a>
-              </td>
-              <td>Type A</td>
-              <td>2024-04-25</td>
-            </tr>
+            {list &&
+              list.links.map((link) => {
+                return (
+                  <tr data-href={link.link_url}>
+                    <td>{link.link_name}</td>
+                    <td>{link.platform}</td>
+                    <td>Video</td>
+                    <td>2024-02-02</td>
+                  </tr>
+                );
+              })}{" "}
           </tbody>
         </table>
       </div>{" "}
@@ -381,32 +365,43 @@ const OpenList = (props) => {
         </div>
         {creatingComment && (
           <div className="createCommentContainer">
-            <textarea className="createCommentinput"></textarea>
-            <div className="createCommentButton">Post comment</div>
+            <textarea
+              className="createCommentinput"
+              onChange={(e) => {
+                setCommentInput(e.target.value);
+              }}
+            ></textarea>
+            <div className="createCommentButton" onClick={addCommentToList}>
+              Post comment
+            </div>
           </div>
         )}
-
+        {list &&
+          list.links.map((link) => {
+            return (
+              <tr data-href={link.link_url}>
+                <td>{link.link_name}</td>
+                <td>{link.platform}</td>
+                <td>Video</td>
+                <td>2024-02-02</td>
+              </tr>
+            );
+          })}{" "}
         <div className="commentsContainer">
+          {" "}
+          {list &&
+            list.comments.map((comment) => {
+              return (
+                <div className="individualCommentContainer">
+                  <h2 className="commentUsernameText">{comment.user}</h2>
+                  <h2 className="commentText">{comment.comment}</h2>
+                </div>
+              );
+            })}{" "}
           <div className="individualCommentContainer">
             <h2 className="commentUsernameText">Brian</h2>
             <h2 className="commentText">This list is hittin the spot brah.</h2>
           </div>{" "}
-          <div className="individualCommentContainer">
-            <h2 className="commentUsernameText">Brian</h2>
-            <h2 className="commentText">This list is hittin the spot brah.</h2>
-          </div>{" "}
-          <div className="individualCommentContainer">
-            <h2 className="commentUsernameText">Brian</h2>
-            <h2 className="commentText">This list is hittin the spot brah.</h2>
-          </div>{" "}
-          <div className="individualCommentContainer">
-            <h2 className="commentUsernameText">Brian</h2>
-            <h2 className="commentText">This list is hittin the spot brah.</h2>
-          </div>{" "}
-          <div className="individualCommentContainer">
-            <h2 className="commentUsernameText">Brian</h2>
-            <h2 className="commentText">This list is hittin the spot brah.</h2>
-          </div>
         </div>
       </div>
     </div>
