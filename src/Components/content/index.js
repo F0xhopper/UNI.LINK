@@ -1,12 +1,10 @@
 import { useState } from "react";
-import MyLists from "./myLists";
+import MyLists from "./Lists";
 import OpenList from "./openList";
 import AccountSettings from "./accountSetting";
 
 const Content = (props) => {
-  const [listOpen, setListOpen] = useState();
   const [creatingList, setCreatingList] = useState();
-
   return (
     <div className="content">
       {props.accountSettingsOpen && (
@@ -15,15 +13,19 @@ const Content = (props) => {
           accountSettingsOpen={props.accountSettingsOpen}
         />
       )}
-      {listOpen ? (
+      {props.listOpen ? (
         <OpenList
-          setListOpen={setListOpen}
-          listOpen={listOpen}
+          setListOpen={props.setListOpen}
+          listOpen={props.listOpen}
           setCreatingList={setCreatingList}
           creatingList={creatingList}
         />
       ) : (
-        <MyLists setCreatingList={setCreatingList} setListOpen={setListOpen} />
+        <MyLists
+          listsPageOpen={props.listsPageOpen}
+          setCreatingList={setCreatingList}
+          setListOpen={props.setListOpen}
+        />
       )}
     </div>
   );

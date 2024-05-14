@@ -13,7 +13,8 @@ import Login from "./Components/login";
 function App() {
   const [loggedIn, setLoggedIn] = useState();
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
-
+  const [listOpen, setListOpen] = useState();
+  const [listsPageOpen, setListsPageOpen] = useState("My Lists");
   useEffect(() => {
     // Check if user ID is stored in local storage
     const userId = localStorage.getItem("userId");
@@ -60,8 +61,16 @@ function App() {
                     accountSettingsOpen={accountSettingsOpen}
                     setAccountSettingsOpen={setAccountSettingsOpen}
                   />
-                  <Sidebar />
+                  <Sidebar
+                    setListsPageOpen={setListsPageOpen}
+                    listsPageOpen={listsPageOpen}
+                    listOpen={listOpen}
+                    setListOpen={setListOpen}
+                  />
                   <Content
+                    listsPageOpen={listsPageOpen}
+                    listOpen={listOpen}
+                    setListOpen={setListOpen}
                     accountSettingsOpen={accountSettingsOpen}
                     setAccountSettingsOpen={setAccountSettingsOpen}
                   />

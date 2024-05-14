@@ -82,6 +82,65 @@ const OpenList = (props) => {
       alert("Failed to add like to the list. Please try again.");
     }
   };
+  const editListInputsInsert = () => {
+    setListNameInput(list.list_name);
+    setListDescriptionInput(list.list_description);
+    setImageDataUrl(list.image);
+  };
+  const editList = async () => {
+    try {
+      console.log("editing");
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/edit`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: listNameInput,
+            description: listDescriptionInput,
+            image: imageDataUrl,
+            public: listPublic,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update list details");
+      }
+
+      // Reset form fields and display success message
+    } catch (error) {
+      alert("Failed to delete link. Please try again.");
+    }
+  };
+  const deleteLink = async (linkUrl) => {
+    try {
+      console.log(linkUrl, list._id);
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/links/${encodeURIComponent(
+          linkUrl
+        )}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to delete link");
+      }
+
+      // Optionally, update the UI to reflect the deletion
+    } catch (error) {
+      console.error("Error deleting link:", error);
+      alert("Failed to delete link. Please try again.");
+    }
+  };
+
   const addCommentToList = async () => {
     try {
       const response = await fetch(
@@ -103,6 +162,7 @@ const OpenList = (props) => {
       }
 
       const responseData = await response.json();
+      setCreatingComment(false);
       console.log("Comment added:", responseData.message);
       // Optionally, update the state to reflect the changes
     } catch (error) {
@@ -110,7 +170,7 @@ const OpenList = (props) => {
       alert("Failed to add comment to the list. Please try again.");
     }
   };
-  const handleSubmit = async (event) => {
+  const createList = async (event) => {
     if (props.creatingList) {
       try {
         const response = await fetch("http://localhost:3013/lists", {
@@ -122,9 +182,10 @@ const OpenList = (props) => {
             userId: localStorage.getItem("userId"),
             list_name: listNameInput,
             list_description: listDescriptionInput,
-            public: listPublic,
+            list_public: listPublic,
             image: imageDataUrl,
             created_at: new Date(),
+            comments: [],
             likes: [],
             links: [],
           }),
@@ -174,17 +235,29 @@ const OpenList = (props) => {
         {editingList || props.creatingList ? (
           <div className="openListEditListContainer">
             <div className="openListEditListImageContainer">
-              <img className="openListEditListImage" src={imageDataUrl}></img>
-              <div class="openListEditListImageOverlayTextContainer">
-                <p class="openListEditListImageOverlayText">
-                  {" "}
+              <img
+                className="openListEditListImage"
+                src={imageDataUrl ? imageDataUrl : list.image && list.image}
+              ></img>
+              <div
+                class="openListEditListImageOverlayTextContainer"
+                style={{
+                  opacity: props.creatingList && imageDataUrl == "" && "1",
+                }}
+              >
+                <label
+                  htmlFor="listImage"
+                  className="openListEditListImageOverlayText"
+                >
+                  {props.creatingList ? "Add Image" : "Change Image"}
                   <input
+                    className="openListEditListImageInput"
+                    id="listImage"
                     type="file"
                     accept="image/*"
                     onChange={handleImageChange} // Handle image upload
-                  />{" "}
-                  {props.creatingList ? "Add Image" : "Change Image"}
-                </p>
+                  />
+                </label>
               </div>
             </div>
             <div className="openListEditListOptionConainer">
@@ -192,6 +265,7 @@ const OpenList = (props) => {
                 <div className="openListEditInputName">List Name</div>
                 <input
                   className="openListEditInput"
+                  value={listNameInput}
                   onChange={(e) => {
                     setListNameInput(e.target.value);
                   }}
@@ -203,6 +277,7 @@ const OpenList = (props) => {
                   List Description
                 </div>
                 <textarea
+                  value={listDescriptionInput}
                   onChange={(e) => {
                     setListDescriptionInput(e.target.value);
                   }}
@@ -219,7 +294,6 @@ const OpenList = (props) => {
                   }
                   onClick={() => {
                     setListPublic(!listPublic);
-                    console.log(list);
                   }}
                 >
                   Private
@@ -242,8 +316,9 @@ const OpenList = (props) => {
                 <div
                   className="openListEditDoneButton"
                   onClick={() => {
+                    editList();
                     setEditingList(false);
-                    handleSubmit();
+                    createList();
                   }}
                 >
                   {props.creatingList ? "Create List" : "Done"}
@@ -253,10 +328,12 @@ const OpenList = (props) => {
           </div>
         ) : (
           <div className="openListInformationContainer">
-            <div className="openListImageContainer">
-              {" "}
-              <img src={list.image}></img>
-            </div>
+            {list.image && (
+              <div className="openListImageContainer">
+                {" "}
+                <img src={list.image}></img>
+              </div>
+            )}
 
             <div className="openListInformationTextButtonContainer">
               <div className="openListInformationTextContainer">
@@ -270,7 +347,7 @@ const OpenList = (props) => {
                 </h2>{" "}
                 <h2 className="openListData">
                   {list.created_at} - Foxhopper -{" "}
-                  {list.public ? "Public" : "Private"}
+                  {list.list_public ? "Public" : "Private"}
                 </h2>
               </div>
               <div className="opemListInteractiveContainer">
@@ -291,22 +368,27 @@ const OpenList = (props) => {
                 >
                   💬
                 </div>
-                <div
-                  className="openListInteractiveButton"
-                  onClick={() => {
-                    setEditingList(true);
-                  }}
-                >
-                  ✎ Edit
-                </div>{" "}
-                <div
-                  className="openListInteractiveButtonLast"
-                  onClick={() => {
-                    setAddingLink(!addingLink);
-                  }}
-                >
-                  + Add Link
-                </div>
+                {list.userId == localStorage.getItem("userId") && (
+                  <div
+                    className="openListInteractiveButton"
+                    onClick={() => {
+                      setEditingList(true);
+                      editListInputsInsert();
+                    }}
+                  >
+                    ✎ Edit
+                  </div>
+                )}
+                {list.userId == localStorage.getItem("userId") && (
+                  <div
+                    className="openListInteractiveButtonLast"
+                    onClick={() => {
+                      setAddingLink(!addingLink);
+                    }}
+                  >
+                    + Add Link
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -316,10 +398,9 @@ const OpenList = (props) => {
         <table id="table">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Platform</th>
+              <th>Content</th>
+              <th>Source</th>
               <th>Type</th>
-              <th>Date</th>
             </tr>
           </thead>
 
@@ -340,13 +421,69 @@ const OpenList = (props) => {
             )}
             {list &&
               list.links.map((link) => {
+                let part1, part2;
+                let contentType = "";
+                if (link.link_url.includes("youtube")) {
+                  contentType = "Video";
+                } else if (
+                  link.link_url.includes("soundcloud") ||
+                  link.link_url.includes("spotify") ||
+                  link.link_url.includes("YouTube")
+                ) {
+                  contentType = "Song";
+                } else if (
+                  link.link_url.includes("ebay") ||
+                  link.link_url.includes("amazon")
+                ) {
+                  contentType = "Item";
+                } else {
+                  contentType = "Informative";
+                }
+                if (link.link_name.includes("-")) {
+                  part1 = link.link_name.substring(
+                    0,
+                    link.link_name.lastIndexOf("-")
+                  );
+                  part2 = link.link_name.substring(
+                    link.link_name.lastIndexOf("-") + 1
+                  );
+                } else if (link.link_name.includes("|")) {
+                  part1 = link.link_name.substring(
+                    0,
+                    link.link_name.lastIndexOf("|")
+                  );
+                  part2 = link.link_name.substring(
+                    link.link_name.lastIndexOf("|") + 1
+                  );
+                } else if (link.link_name.includes(":")) {
+                  part1 = link.link_name.substring(
+                    0,
+                    link.link_name.lastIndexOf(":")
+                  );
+                  part2 = link.link_name.substring(
+                    link.link_name.lastIndexOf(":") + 1
+                  );
+                } else {
+                  part1 = link.link_name;
+                  part2 = "Internet";
+                }
+
                 return (
-                  <tr data-href={link.link_url}>
-                    <td>{link.link_name}</td>
-                    <td>{link.platform}</td>
-                    <td>Video</td>
-                    <td>2024-02-02</td>
-                  </tr>
+                  <a target="_blank" href={link.link_url}>
+                    <td>{part1}</td>
+                    <td>{part2}</td>
+                    <td>{contentType}</td>
+                    {editingList && (
+                      <td
+                        onClick={() => {
+                          deleteLink(link.link_url);
+                          console.log(link.link_url);
+                        }}
+                      >
+                        Delete
+                      </td>
+                    )}
+                  </a>
                 );
               })}{" "}
           </tbody>
@@ -376,17 +513,7 @@ const OpenList = (props) => {
             </div>
           </div>
         )}
-        {list &&
-          list.links.map((link) => {
-            return (
-              <tr data-href={link.link_url}>
-                <td>{link.link_name}</td>
-                <td>{link.platform}</td>
-                <td>Video</td>
-                <td>2024-02-02</td>
-              </tr>
-            );
-          })}{" "}
+
         <div className="commentsContainer">
           {" "}
           {list &&
@@ -398,10 +525,6 @@ const OpenList = (props) => {
                 </div>
               );
             })}{" "}
-          <div className="individualCommentContainer">
-            <h2 className="commentUsernameText">Brian</h2>
-            <h2 className="commentText">This list is hittin the spot brah.</h2>
-          </div>{" "}
         </div>
       </div>
     </div>

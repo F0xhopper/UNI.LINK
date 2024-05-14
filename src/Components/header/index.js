@@ -9,6 +9,7 @@ const Header = (props) => {
     localStorage.removeItem("userId");
     props.setLoggedIn(false);
   }
+  
   useEffect(() => {
     // Retrieve user ID from localStorage
     const userId = localStorage.getItem("userId");

@@ -1,17 +1,46 @@
-const Sidebar = () => {
+const Sidebar = (props) => {
   return (
     <div className="sidebar">
       <div>
-        <div className="sidebarMenuContainer">
+        <div
+          style={{
+            backgroundColor:
+              props.listsPageOpen == "My Lists" ? "white" : "black",
+            color: props.listsPageOpen == "My Lists" ? "black" : "white",
+          }}
+          className="sidebarMenuContainer"
+          onClick={() => {
+            props.setListOpen(false);
+            props.setListsPageOpen("My Lists");
+          }}
+        >
           <h2 className="sidebarMenuText">My Lists</h2>
         </div>{" "}
-        <div className="sidebarMenuContainer">
-          <h2 className="sidebarMenuText">Favourites</h2>
-        </div>{" "}
-        <div className="sidebarMenuContainer">
+        <div
+          className="sidebarMenuContainer"
+          onClick={() => {
+            props.setListOpen(false);
+            props.setListsPageOpen("Discover");
+          }}
+          style={{
+            backgroundColor:
+              props.listsPageOpen == "Discover" ? "white" : "black",
+            color: props.listsPageOpen == "Discover" ? "black" : "white",
+          }}
+        >
           <h2 className="sidebarMenuText">Discover</h2>
         </div>{" "}
-        <div className="sidebarMenuContainer">
+        <div
+          className="sidebarMenuContainer"
+          onClick={() => {
+            props.setListOpen(false);
+            props.setListsPageOpen("Liked");
+          }}
+          style={{
+            backgroundColor: props.listsPageOpen == "Liked" ? "white" : "black",
+            color: props.listsPageOpen == "Liked" ? "black" : "white",
+          }}
+        >
           <h2 className="sidebarMenuText">Liked</h2>
         </div>{" "}
       </div>

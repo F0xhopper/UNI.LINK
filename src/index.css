@@ -567,6 +567,9 @@ code {
   height: 140px;
   border-bottom: 1px solid rgb(88, 88, 88);
 }
+.openListEditListImageInput {
+  display: none;
+}
 .openListEditDescriptionInput {
   flex: 1;
   border: 0px;
@@ -577,6 +580,7 @@ code {
 .openListEditListImageContainer {
   position: relative;
   display: flex;
+  min-width: 200px;
   padding: 20px;
   border-right: 1px solid rgb(88, 88, 88);
 }
@@ -596,6 +600,7 @@ code {
   top: 0;
   left: 0;
   width: 100%;
+  display: flex;
   height: 100%;
   cursor: pointer;
   background-color: rgba(0, 0, 0, 0.5); /* Adjust opacity to dim image */
@@ -605,7 +610,10 @@ code {
   opacity: 1;
 }
 .openListEditListImageOverlayText {
-  margin-top: 135px;
+  cursor: pointer;
+  padding-top: 135px;
+  width: 100%;
+  height: 100%;
   text-align: center;
 }
 .openListEditListImage:hover {
@@ -631,6 +639,7 @@ code {
 .addLinkInput {
   background-color: transparent;
   flex: 1;
+  color: white;
   border: 0px;
   border-right: 1px solid rgb(88, 88, 88);
 }
@@ -833,10 +842,16 @@ tbody {
   overflow-y: auto;
 }
 
-tr {
+tr,
+a {
   display: flex;
-
+  color: white;
+  text-decoration: none;
   cursor: pointer;
+}
+a:hover {
+  color: #000000;
+  background-color: white;
 }
 tbody tr:hover {
   background-color: white;
