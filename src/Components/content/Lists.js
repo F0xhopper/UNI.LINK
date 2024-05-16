@@ -4,11 +4,12 @@ import React, { useEffect, useState } from "react";
 const MyLists = (props) => {
   const [sortDropdownVisible, setSortDropdownVisible] = useState(false);
   const [originalLists, setOriginalLists] = useState([]);
-  const [Lists, setLists] = useState([]);
+  const [Lists, setLists] = useState();
   const [searchInput, setSearchInput] = useState("");
 
   useEffect(() => {
     fetchLists();
+    console.log("got" + Lists);
   }, [props.listsPageOpen]);
 
   const fetchLists = async () => {
@@ -29,13 +30,21 @@ const MyLists = (props) => {
         throw new Error("Failed to fetch lists");
       }
       const data = await response.json();
-      setOriginalLists(data);
-      setLists(data);
+
+      // Fetch username for each list
+      const listsWithUsername = await Promise.all(
+        data.map(async (list) => {
+          const username = await fetchUserName(list.userId);
+          return { ...list, username }; // Add username to list object
+        })
+      );
+
+      setOriginalLists(listsWithUsername);
+      setLists(listsWithUsername);
     } catch (error) {
       console.error("Error fetching lists:", error);
     }
   };
-
   const handleSearch = () => {
     if (searchInput.trim() !== "") {
       const filteredLists = originalLists.filter(
@@ -63,6 +72,27 @@ const MyLists = (props) => {
       return ""; // Return empty string if user data fetching fails
     }
   };
+  const sortListsByDate = () => {
+    const sortedLists = [...Lists].sort(
+      (a, b) => new Date(b.created_at) - new Date(a.created_at)
+    );
+    setLists(sortedLists);
+  };
+
+  const sortListsAlphabetically = () => {
+    const sortedLists = [...Lists].sort((a, b) =>
+      a.list_name.localeCompare(b.list_name)
+    );
+    setLists(sortedLists);
+  };
+
+  const sortListsByLikes = () => {
+    const sortedLists = [...Lists].sort(
+      (a, b) => b.likes.length - a.likes.length
+    );
+    setLists(sortedLists);
+  };
+
   return (
     <div>
       <div className="myListsCreateSearchSortContainer">
@@ -102,10 +132,19 @@ const MyLists = (props) => {
                 src={downArrow}
               ></img>
             </div>
-            <h2 className="sortDropdownOptionText">A-Z</h2>
-            <h2 className="sortDropdownOptionText">Newest-Oldeest</h2>
+            <h2
+              className="sortDropdownOptionText"
+              onClick={sortListsAlphabetically}
+            >
+              A-Z
+            </h2>
+            <h2 className="sortDropdownOptionText" onClick={sortListsByDate}>
+              Newest-Oldeest
+            </h2>
             <h2 className="sortDropdownOptionText">Oldest-Newest</h2>
-            <h2 className="sortDropdownOptionText">Most-Least</h2>
+            <h2 className="sortDropdownOptionText" onClick={sortListsByLikes}>
+              Most-Least
+            </h2>
             <h2 className="sortDropdownOptionText">Least-Most Likes</h2>
             <h2 className="sortDropdownOptionText"></h2>
           </div>
@@ -123,36 +162,40 @@ const MyLists = (props) => {
         )}
       </div>
       <div className="myListsMainContainer">
-        {Lists.map((list) => (
-          <div
-            key={list._id}
-            className="individualListContainer"
-            onClick={() => props.setListOpen(list._id)}
-          >
-            <img
-              className="individualListImage"
-              src={list.image}
-              alt="List"
-            ></img>{" "}
-            <div className="individualListTitleLikesContainer">
-              <h2 className="individualListTitleText">{list.list_name}</h2>
-              <h2 className="individualListTitleText">♡ {list.likes.length}</h2>
-            </div>
-            <p className="individualListDescriptionText">
-              {list.list_description}
-            </p>
-            {props.listsPageOpen === "Discover" ? (
-              <h2 className="individualListDateText">
-                {list.created_at} - {fetchUserName(list.userId)} -{" "}
-                {list.links.length} Links
-              </h2>
-            ) : (
-              <h2 className="individualListDateText">
-                {list.created_at} - {list.links.length} Links
-              </h2>
-            )}
-          </div>
-        ))}
+        {Lists
+          ? Lists.map((list) => (
+              <div
+                key={list._id}
+                className="individualListContainer"
+                onClick={() => props.setListOpen(list._id)}
+              >
+                <img
+                  className="individualListImage"
+                  src={list.image}
+                  alt="List"
+                ></img>{" "}
+                <div className="individualListTitleLikesContainer">
+                  <h2 className="individualListTitleText">{list.list_name}</h2>
+                  <h2 className="individualListTitleText">
+                    ♡ {list.likes.length}
+                  </h2>
+                </div>
+                <p className="individualListDescriptionText">
+                  {list.list_description}
+                </p>
+                {props.listsPageOpen === "Discover" ? (
+                  <h2 className="individualListDateText">
+                    {list.created_at} - {list.username} - {list.links.length}{" "}
+                    Links
+                  </h2>
+                ) : (
+                  <h2 className="individualListDateText">
+                    {list.created_at} - {list.links.length} Links
+                  </h2>
+                )}
+              </div>
+            ))
+          : "Loading..."}
       </div>
     </div>
   );

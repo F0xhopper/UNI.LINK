@@ -30,6 +30,7 @@ const OpenList = (props) => {
   };
   const addLinkToList = async () => {
     try {
+      console.log(list._id);
       const response = await fetch(
         `http://localhost:3013/lists/${list._id}/links`,
         {
@@ -44,13 +45,14 @@ const OpenList = (props) => {
           }),
         }
       );
-
+      console.log(`http://localhost:3013/lists/${list._id}/links`);
       if (!response.ok) {
         throw new Error("Failed to add link to the list");
       }
 
       const responseData = await response.json();
       console.log("Link added:", responseData.message);
+      setAddingLink(false);
       // Optionally, update the state to reflect the changes
     } catch (error) {
       console.error("Error adding link to the list:", error);
@@ -88,33 +90,51 @@ const OpenList = (props) => {
     setImageDataUrl(list.image);
   };
   const editList = async () => {
-    try {
-      console.log("editing");
-      const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/edit`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name: listNameInput,
-            description: listDescriptionInput,
-            image: imageDataUrl,
-            public: listPublic,
-          }),
+    if (!props.creatingList) {
+      try {
+        console.log("editing");
+        const response = await fetch(
+          `http://localhost:3013/lists/${list._id}/edit`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              name: listNameInput,
+              description: listDescriptionInput,
+              image: imageDataUrl,
+              public: listPublic,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to update list details");
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Failed to update list details");
-      }
-
-      // Reset form fields and display success message
-    } catch (error) {
-      alert("Failed to delete link. Please try again.");
+        // Reset form fields and display success message
+      } catch (error) {}
     }
   };
+
+  const deleteList = async (listId) => {
+    try {
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/delete`,
+        {
+          method: "DELETE",
+        }
+      );
+      props.setListOpen();
+      if (!response.ok) {
+        throw new Error("Failed to delete list");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
   const deleteLink = async (linkUrl) => {
     try {
       console.log(linkUrl, list._id);
@@ -184,7 +204,7 @@ const OpenList = (props) => {
             list_description: listDescriptionInput,
             list_public: listPublic,
             image: imageDataUrl,
-            created_at: new Date(),
+            created_at: new Date().toISOString().slice(0, 10),
             comments: [],
             likes: [],
             links: [],
@@ -206,19 +226,46 @@ const OpenList = (props) => {
       }
     }
   };
+  const fetchUserName = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:3013/users/${userId}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+      const userData = await response.json();
+      return userData.username;
+    } catch (error) {
+      console.error("Failed to fetch user data:", error);
+      return ""; // Return empty string if user data fetching fails
+    }
+  };
   useEffect(() => {
     const fetchListData = async () => {
       try {
-        console.log(props.listOpen);
         const response = await fetch(
           `http://localhost:3013/list/${props.listOpen}`
         ); // Change the URL according to your backend API
         if (!response.ok) {
           throw new Error("Failed to fetch user list");
         }
-        const data = await response.json();
+        let data = await response.json();
+        if (data.comments.length > 0) {
+          const commentsWithUsername = await Promise.all(
+            data.comments.map(async (comment) => {
+              try {
+                const username = await fetchUserName(comment.user);
+                // Return the comment object with username added
+                return { ...comment, username: username }; // or simply { ...comment, username }
+              } catch (error) {
+                console.error("Error fetching username:", error);
+                // If fetching username fails, return the comment without modifying
+                return comment;
+              }
+            })
+          );
+          data.comments = commentsWithUsername;
+        }
         setList(data); // Assuming the response contains an array of lists
-        console.log(list);
       } catch (error) {
         console.error("Error fetching user lists:", error);
       }
@@ -235,10 +282,7 @@ const OpenList = (props) => {
         {editingList || props.creatingList ? (
           <div className="openListEditListContainer">
             <div className="openListEditListImageContainer">
-              <img
-                className="openListEditListImage"
-                src={imageDataUrl ? imageDataUrl : list.image && list.image}
-              ></img>
+              <img className="openListEditListImage" src={imageDataUrl}></img>
               <div
                 class="openListEditListImageOverlayTextContainer"
                 style={{
@@ -312,7 +356,9 @@ const OpenList = (props) => {
                 </div>
               </div>
               <div className="openListEditButtonContainer">
-                <div className="openListEditDeleteButton">Delete</div>
+                <div className="openListEditDeleteButton" onClick={deleteList}>
+                  Delete
+                </div>
                 <div
                   className="openListEditDoneButton"
                   onClick={() => {
@@ -341,10 +387,14 @@ const OpenList = (props) => {
                   <h2 className="openListTitle">▶︎ {list.list_name}</h2>
                   <h2 className="openListLikesText">♡ {list.likes.length}</h2>
                 </div>
-                <h2 className="openListDescription">
+                <div className="openListDescriptionContainer">
                   {" "}
-                  {list.list_description}
-                </h2>{" "}
+                  <h2 className="openListDescription">
+                    {" "}
+                    {list.list_description}
+                  </h2>
+                </div>
+
                 <h2 className="openListData">
                   {list.created_at} - Foxhopper -{" "}
                   {list.list_public ? "Public" : "Private"}
@@ -497,7 +547,7 @@ const OpenList = (props) => {
               setCreatingComment(!creatingComment);
             }}
           >
-            456 Comments
+            {list.comments.length} comments
           </h2>
         </div>
         {creatingComment && (
@@ -520,7 +570,7 @@ const OpenList = (props) => {
             list.comments.map((comment) => {
               return (
                 <div className="individualCommentContainer">
-                  <h2 className="commentUsernameText">{comment.user}</h2>
+                  <h2 className="commentUsernameText">{comment.username}</h2>
                   <h2 className="commentText">{comment.comment}</h2>
                 </div>
               );

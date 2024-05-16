@@ -226,7 +226,7 @@ code {
   background-color: transparent;
   font-family: monospace;
   color: white;
-  width: 199px;
+  width: 100%;
   border: 0px;
   margin-right: 10px;
   padding: 10px;
@@ -349,7 +349,7 @@ code {
   cursor: pointer;
   padding-bottom: 0px;
   box-sizing: border-box;
-  border-left: 1px solid rgb(88, 88, 88);
+  border-right: 1px solid rgb(88, 88, 88);
   border-bottom: 1px solid rgb(88, 88, 88);
   background-color: #000000;
   overflow: hidden;
@@ -384,6 +384,10 @@ code {
   .individualListContainerFirst {
     width: 50%;
   }
+  .individualListContainer:nth-child(2n) {
+    border-right: 0px;
+    border-bottom: 1px solid rgb(88, 88, 88);
+  }
   .individualListImage {
     height: 30vw;
   }
@@ -393,9 +397,18 @@ code {
   .individualListContainerFirst {
     width: 100%;
   }
+  .individualListContainer {
+    border-right: 0px;
+    border-left: 0px;
+    border-bottom: 1px solid rgb(88, 88, 88);
+  }
   .individualListImage {
     height: 50vw;
   }
+}
+.individualListContainer:nth-child(4n) {
+  border-right: 0px;
+  border-bottom: 1px solid rgb(88, 88, 88);
 }
 .individualListTitleText {
   font-weight: 100;
@@ -559,6 +572,13 @@ code {
   border-left: 1px solid rgb(88, 88, 88);
   text-align: center;
   padding-top: 20px;
+}
+.openListDescriptionContainer {
+  height: 120px;
+  overflow: scroll;
+}
+.openListDescriptionContainer::-webkit-scrollbar {
+  display: none;
 }
 .openListEditDescriptionInputContainer {
   display: flex;
