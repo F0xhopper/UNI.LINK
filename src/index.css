@@ -130,6 +130,17 @@ code {
   width: 100%;
   border-bottom: 1px solid rgb(88, 88, 88);
 }
+.profilePictureCircle {
+  background-color: white;
+  height: 40px;
+  width: 45px;
+  color: #000000;
+  font-size: 24px;
+  padding-top: 7px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 100px;
+}
 .logoImage {
   width: 230px;
   height: 40px;
@@ -159,7 +170,7 @@ code {
   flex-direction: column;
   border-bottom: 1px solid rgb(88, 88, 88);
   border-left: 1px solid rgb(88, 88, 88);
-  z-index: 1000;
+  z-index: 2000;
 }
 .profilePictureImage {
   width: 40px;
@@ -169,6 +180,7 @@ code {
 }
 .userAccountDropdownNameArrowContainer {
   display: flex;
+  justify-content: space-between;
 }
 .userAccountContainer {
   border-left: 1px solid rgb(88, 88, 88);
@@ -197,12 +209,32 @@ code {
   border-bottom: 1px solid rgb(88, 88, 88);
   height: 60px;
 }
+.sidebarMenuContainerOpen {
+  box-sizing: border-box;
+  display: flex;
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  border-bottom: 1px solid rgb(88, 88, 88);
+  height: 60px;
+}
 .linkDropContainer {
   margin-top: 20px;
   border: 2px dotted rgb(88, 88, 88);
   width: 205px;
   height: 96px;
   text-align: center;
+  padding-top: 70px;
+  border-radius: 10px;
+}
+.linkDropContainerDraggingOver {
+  margin-top: 20px;
+  border: 2px dotted rgb(88, 88, 88);
+  width: 205px;
+  height: 96px;
+  color: #b8b8b8;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.861) inset;
   padding-top: 70px;
   border-radius: 10px;
 }
@@ -420,6 +452,13 @@ code {
 
   font-weight: 100;
 }
+.individualListDescriptionTextContainer {
+  max-height: 150px;
+  overflow: auto;
+}
+.individualListDescriptionTextContainer::-webkit-scrollbar {
+  display: none;
+}
 .individualListTitleLikesContainer {
   display: flex;
   justify-content: space-between;
@@ -428,7 +467,8 @@ code {
   text-align: end;
   margin-top: 0px;
   font-size: 10px;
-  margin-top: 30px;
+  margin-top: auto;
+  padding-top: 30px;
   font-weight: 100;
 }
 .myListsMainContainer {
@@ -437,6 +477,15 @@ code {
   box-sizing: border-box;
   overflow: auto;
   max-height: calc(100vh - 110px);
+  flex-wrap: wrap;
+}
+.myListsMainContainerAccountSettingsOpen {
+  flex: 1;
+  display: flex;
+  box-sizing: border-box;
+  overflow: auto;
+  max-height: calc(100vh - 311px);
+
   flex-wrap: wrap;
 }
 .myListsMainContainer::-webkit-scrollbar {
@@ -451,6 +500,7 @@ code {
 .changeAccountSettingsContainer {
   border-bottom: 1px solid rgb(88, 88, 88);
   display: flex;
+  min-height: 200px;
   flex-direction: column;
   height: 200px;
   background-color: transparent;
@@ -773,8 +823,16 @@ code {
   font-size: 16px;
   margin: 10px;
 }
+.commentDeleteText {
+  font-weight: 100;
+  font-size: 14px;
+  cursor: pointer;
+}
 .individualCommentContainer {
   border-bottom: 1px solid rgb(88, 88, 88);
+}
+.individualCommentUsernameContainer {
+  display: flex;
 }
 .commentsContainer {
   height: 249px;
@@ -862,7 +920,11 @@ tbody {
   overflow-y: auto;
 }
 
-tr,
+tr {
+  display: flex;
+  color: white;
+  text-decoration: none;
+}
 a {
   display: flex;
   color: white;

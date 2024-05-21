@@ -15,6 +15,9 @@ const OpenList = (props) => {
   const [list, setList] = useState(null);
   const [addLinkInput, setAddLinkInput] = useState();
   const [commentInput, setCommentInput] = useState();
+  const [listType, setListType] = useState();
+  const [shareText, setShareText] = useState("Share");
+  const [commentEditing, setCommentEditing] = useState();
   const handleImageChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
@@ -30,7 +33,24 @@ const OpenList = (props) => {
   };
   const addLinkToList = async () => {
     try {
-      console.log(list._id);
+      let linkType = "";
+
+      if (addLinkInput.toLowerCase().includes("youtube")) {
+        linkType = "Video";
+      } else if (
+        addLinkInput.toLowerCase().includes("soundcloud") ||
+        addLinkInput.toLowerCase().includes("spotify")
+      ) {
+        linkType = "Song";
+      } else if (
+        addLinkInput.toLowerCase().includes("ebay") ||
+        addLinkInput.toLowerCase().includes("amazon")
+      ) {
+        linkType = "Item";
+      } else {
+        linkType = "Informative";
+      }
+
       const response = await fetch(
         `http://localhost:3013/lists/${list._id}/links`,
         {
@@ -41,11 +61,10 @@ const OpenList = (props) => {
           body: JSON.stringify({
             link_name: "Name of the Link", // Replace with actual values
             link_url: addLinkInput,
-            platform: "",
+            link_type: linkType,
           }),
         }
       );
-      console.log(`http://localhost:3013/lists/${list._id}/links`);
       if (!response.ok) {
         throw new Error("Failed to add link to the list");
       }
@@ -57,6 +76,24 @@ const OpenList = (props) => {
     } catch (error) {
       console.error("Error adding link to the list:", error);
       alert("Failed to add link to the list. Please try again.");
+    }
+  };
+  const editComment = () => {};
+  const calculateListType = () => {
+    if (list) {
+      if (list.links.length == 0) {
+        setListType("");
+      } else if (list.links.every((link) => link.link_type == "Video")) {
+        setListType("▶︎");
+      } else if (list.links.every((link) => link.link_type == "Informative")) {
+        setListType("📓");
+      } else if (list.links.every((link) => link.link_type == "Song")) {
+        setListType("♫");
+      } else if (list.links.every((link) => link.link_type == "Item")) {
+        setListType("🧺");
+      } else {
+        setListType("∞");
+      }
     }
   };
   const addLikeToList = async () => {
@@ -77,7 +114,6 @@ const OpenList = (props) => {
       }
 
       const responseData = await response.json();
-      console.log("Like added:", responseData.message);
       // Optionally, update the state to reflect the changes
     } catch (error) {
       console.error("Error adding like to the list:", error);
@@ -88,11 +124,11 @@ const OpenList = (props) => {
     setListNameInput(list.list_name);
     setListDescriptionInput(list.list_description);
     setImageDataUrl(list.image);
+    setListPublic(list.list_public);
   };
   const editList = async () => {
     if (!props.creatingList) {
       try {
-        console.log("editing");
         const response = await fetch(
           `http://localhost:3013/lists/${list._id}/edit`,
           {
@@ -117,6 +153,31 @@ const OpenList = (props) => {
       } catch (error) {}
     }
   };
+  const deleteComment = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3013/lists/${list._id}/comments`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: localStorage.getItem("userId"),
+            comment: commentEditing,
+          }),
+        }
+      );
+
+      const result = await response.json();
+      setCommentEditing();
+      if (response.ok) {
+      } else {
+      }
+    } catch (error) {
+      console.error("There was an error deleting the comment:", error);
+    }
+  };
 
   const deleteList = async (listId) => {
     try {
@@ -134,7 +195,13 @@ const OpenList = (props) => {
       console.error(error.message);
     }
   };
-
+  const copyUrl = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setShareText("List Copied");
+    setTimeout(() => {
+      setShareText("Share");
+    }, 1000); //
+  };
   const deleteLink = async (linkUrl) => {
     try {
       console.log(linkUrl, list._id);
@@ -270,7 +337,7 @@ const OpenList = (props) => {
         console.error("Error fetching user lists:", error);
       }
     };
-
+    calculateListType();
     fetchListData();
   });
   if (!list && !props.creatingList) {
@@ -337,7 +404,7 @@ const OpenList = (props) => {
                       : "openListEditSelectedButton"
                   }
                   onClick={() => {
-                    setListPublic(!listPublic);
+                    setListPublic(false);
                   }}
                 >
                   Private
@@ -349,7 +416,8 @@ const OpenList = (props) => {
                       : "openListEditUnselectedButton"
                   }
                   onClick={() => {
-                    setListPublic(!listPublic);
+                    setListPublic(true);
+                    console.log(listPublic);
                   }}
                 >
                   Public
@@ -384,8 +452,16 @@ const OpenList = (props) => {
             <div className="openListInformationTextButtonContainer">
               <div className="openListInformationTextContainer">
                 <div className="openListTitleLikesContainer">
-                  <h2 className="openListTitle">▶︎ {list.list_name}</h2>
-                  <h2 className="openListLikesText">♡ {list.likes.length}</h2>
+                  <h2 className="openListTitle">
+                    {listType} {list.list_name}
+                  </h2>
+                  <h2 className="openListLikesText">
+                    {" "}
+                    {list.likes.includes(localStorage.getItem("userId"))
+                      ? "♥"
+                      : "♡"}{" "}
+                    {list.likes.length}
+                  </h2>
                 </div>
                 <div className="openListDescriptionContainer">
                   {" "}
@@ -402,13 +478,18 @@ const OpenList = (props) => {
               </div>
               <div className="opemListInteractiveContainer">
                 {" "}
-                <div className="openListInteractiveButton"> Share</div>
+                <div className="openListInteractiveButton" onClick={copyUrl}>
+                  {" "}
+                  {shareText}
+                </div>
                 <div
                   className="openListInteractiveButton"
                   onClick={addLikeToList}
                 >
                   {" "}
-                  ♡{" "}
+                  {list.likes.includes(localStorage.getItem("userId"))
+                    ? "♥"
+                    : "♡"}{" "}
                 </div>{" "}
                 <div
                   className="openListInteractiveButton"
@@ -472,23 +553,7 @@ const OpenList = (props) => {
             {list &&
               list.links.map((link) => {
                 let part1, part2;
-                let contentType = "";
-                if (link.link_url.includes("youtube")) {
-                  contentType = "Video";
-                } else if (
-                  link.link_url.includes("soundcloud") ||
-                  link.link_url.includes("spotify") ||
-                  link.link_url.includes("YouTube")
-                ) {
-                  contentType = "Song";
-                } else if (
-                  link.link_url.includes("ebay") ||
-                  link.link_url.includes("amazon")
-                ) {
-                  contentType = "Item";
-                } else {
-                  contentType = "Informative";
-                }
+
                 if (link.link_name.includes("-")) {
                   part1 = link.link_name.substring(
                     0,
@@ -522,7 +587,7 @@ const OpenList = (props) => {
                   <a target="_blank" href={link.link_url}>
                     <td>{part1}</td>
                     <td>{part2}</td>
-                    <td>{contentType}</td>
+                    <td>{link.link_type}</td>
                     {editingList && (
                       <td
                         onClick={() => {
@@ -547,7 +612,7 @@ const OpenList = (props) => {
               setCreatingComment(!creatingComment);
             }}
           >
-            {list.comments.length} comments
+            {list ? list.comments.length : "0"} comments
           </h2>
         </div>
         {creatingComment && (
@@ -570,8 +635,39 @@ const OpenList = (props) => {
             list.comments.map((comment) => {
               return (
                 <div className="individualCommentContainer">
-                  <h2 className="commentUsernameText">{comment.username}</h2>
-                  <h2 className="commentText">{comment.comment}</h2>
+                  {comment.comment == commentEditing ? (
+                    <div>
+                      <input></input>
+                      <div onClick={deleteComment}>Delete</div>
+                      <div
+                        onClick={() => {
+                          setCommentEditing();
+                        }}
+                      >
+                        Done
+                      </div>
+                    </div>
+                  ) : (
+                    <div>
+                      {" "}
+                      <div className="individualCommentUsernameContainer">
+                        <h2 className="commentUsernameText">
+                          {comment.username}
+                        </h2>
+                        {comment.user === localStorage.getItem("userId") && (
+                          <h2
+                            className="commentDeleteText"
+                            onClick={() => {
+                              setCommentEditing(comment.comment);
+                            }}
+                          >
+                            ✎
+                          </h2>
+                        )}
+                      </div>
+                      <h2 className="commentText">{comment.comment}</h2>
+                    </div>
+                  )}
                 </div>
               );
             })}{" "}

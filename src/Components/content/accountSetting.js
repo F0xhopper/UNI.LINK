@@ -27,6 +27,7 @@ const AccountSettings = (props) => {
       .catch((error) => {
         console.error("Error fetching user data:", error);
       });
+    props.setAccountSettingsOpen(false);
   }
   useEffect(() => {
     function getAccountDetails() {

@@ -22,6 +22,7 @@ const Content = (props) => {
         />
       ) : (
         <MyLists
+          accountSettingsOpen={props.accountSettingsOpen}
           listsPageOpen={props.listsPageOpen}
           setCreatingList={setCreatingList}
           setListOpen={props.setListOpen}

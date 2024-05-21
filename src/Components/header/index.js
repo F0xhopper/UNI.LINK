@@ -9,7 +9,7 @@ const Header = (props) => {
     localStorage.removeItem("userId");
     props.setLoggedIn(false);
   }
-  
+
   useEffect(() => {
     // Retrieve user ID from localStorage
     const userId = localStorage.getItem("userId");
@@ -28,7 +28,9 @@ const Header = (props) => {
       </div>
       {accountDropdownVisible ? (
         <div className="userAccountContainer">
-          <img className="profilePictureImage" src={profilePicture}></img>
+          <div className="profilePictureCircle">
+            {user ? user.username.substring(0, 1) : ""}
+          </div>
           <img
             className="userDownArrowImage"
             onClick={() => {

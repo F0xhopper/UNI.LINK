@@ -6,8 +6,10 @@ const MyLists = (props) => {
   const [originalLists, setOriginalLists] = useState([]);
   const [Lists, setLists] = useState();
   const [searchInput, setSearchInput] = useState("");
+  const [sortingType, setSortingType] = useState("Sorting");
 
   useEffect(() => {
+    setLists(null);
     fetchLists();
     console.log("got" + Lists);
   }, [props.listsPageOpen]);
@@ -45,6 +47,30 @@ const MyLists = (props) => {
       console.error("Error fetching lists:", error);
     }
   };
+  const calculateListType = (list) => {
+    if (list) {
+      if (list.links.length == 0) {
+        return "";
+      } else if (list.links.every((link) => link.link_type == "Video")) {
+        return "▶︎";
+      } else if (list.links.every((link) => link.link_type == "Informative")) {
+        return "📓";
+      } else if (list.links.every((link) => link.link_type == "Song")) {
+        return "♫";
+      } else if (list.links.every((link) => link.link_type == "Item")) {
+        return "🧺";
+      } else {
+        return "∞";
+      }
+    }
+  };
+  const isLiked = (list) => {
+    if (list.likes.includes(localStorage.getItem("userId"))) {
+      return "♥";
+    } else {
+      return "♡";
+    }
+  };
   const handleSearch = () => {
     if (searchInput.trim() !== "") {
       const filteredLists = originalLists.filter(
@@ -77,6 +103,7 @@ const MyLists = (props) => {
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
     );
     setLists(sortedLists);
+    setSortingType("Newest-Oldest");
   };
 
   const sortListsAlphabetically = () => {
@@ -84,6 +111,7 @@ const MyLists = (props) => {
       a.list_name.localeCompare(b.list_name)
     );
     setLists(sortedLists);
+    setSortingType("A-Z");
   };
 
   const sortListsByLikes = () => {
@@ -91,6 +119,7 @@ const MyLists = (props) => {
       (a, b) => b.likes.length - a.likes.length
     );
     setLists(sortedLists);
+    setSortingType("Most-Least Likes");
   };
 
   return (
@@ -119,7 +148,7 @@ const MyLists = (props) => {
         {sortDropdownVisible ? (
           <div className="sortDropdownContainer">
             <div className="sortDropdownTextArrowContainer">
-              <h2 className="sortText">Sorting</h2>
+              <h2 className="sortText">{sortingType}</h2>
               <img
                 className="sortdownArrowImage"
                 onClick={() => {
@@ -132,25 +161,31 @@ const MyLists = (props) => {
                 src={downArrow}
               ></img>
             </div>
-            <h2
-              className="sortDropdownOptionText"
-              onClick={sortListsAlphabetically}
-            >
-              A-Z
-            </h2>
-            <h2 className="sortDropdownOptionText" onClick={sortListsByDate}>
-              Newest-Oldeest
-            </h2>
+            {sortingType != "A-Z" && (
+              <h2
+                className="sortDropdownOptionText"
+                onClick={sortListsAlphabetically}
+              >
+                A-Z
+              </h2>
+            )}{" "}
+            {sortingType != "Newest-Oldest" && (
+              <h2 className="sortDropdownOptionText" onClick={sortListsByDate}>
+                Newest-Oldest
+              </h2>
+            )}
             <h2 className="sortDropdownOptionText">Oldest-Newest</h2>
-            <h2 className="sortDropdownOptionText" onClick={sortListsByLikes}>
-              Most-Least
-            </h2>
+            {sortingType != "Most-Least Likesnpm " && (
+              <h2 className="sortDropdownOptionText" onClick={sortListsByLikes}>
+                Most-Least Likes
+              </h2>
+            )}
             <h2 className="sortDropdownOptionText">Least-Most Likes</h2>
             <h2 className="sortDropdownOptionText"></h2>
           </div>
         ) : (
           <div className="sortContainer">
-            <h2 className="sortText">Sorting</h2>
+            <h2 className="sortText">{sortingType}</h2>
             <img
               className="sortdownArrowImage"
               src={downArrow}
@@ -161,7 +196,13 @@ const MyLists = (props) => {
           </div>
         )}
       </div>
-      <div className="myListsMainContainer">
+      <div
+        className={
+          props.accountSettingsOpen
+            ? "myListsMainContainerAccountSettingsOpen"
+            : "myListsMainContainer"
+        }
+      >
         {Lists
           ? Lists.map((list) => (
               <div
@@ -175,14 +216,18 @@ const MyLists = (props) => {
                   alt="List"
                 ></img>{" "}
                 <div className="individualListTitleLikesContainer">
-                  <h2 className="individualListTitleText">{list.list_name}</h2>
                   <h2 className="individualListTitleText">
-                    ♡ {list.likes.length}
+                    {calculateListType(list)} {list.list_name}
+                  </h2>
+                  <h2 className="individualListTitleText">
+                    {isLiked(list)} {list.likes.length}
                   </h2>
                 </div>
-                <p className="individualListDescriptionText">
-                  {list.list_description}
-                </p>
+                <div className="individualListDescriptionTextContainer">
+                  <p className="individualListDescriptionText">
+                    {list.list_description}
+                  </p>
+                </div>
                 {props.listsPageOpen === "Discover" ? (
                   <h2 className="individualListDateText">
                     {list.created_at} - {list.username} - {list.links.length}{" "}

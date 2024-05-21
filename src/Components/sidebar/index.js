@@ -3,18 +3,36 @@ const Sidebar = (props) => {
   const [listForLinkDrop, setListForLinkDrop] = useState("Select List");
   const [linkToDrop, setLinkToDrop] = useState();
   const [myLists, setMyLists] = useState([]);
+  const [isDraggingOver, setIsDraggingOver] = useState(false); // State to track if dragging over
+  const [dropLinkContainerText, setDropLinkContainerText] =
+    useState("Drop Link");
   const handleDrop = async (e) => {
-    console.log("ccalled fucniton");
-    e.preventDefault();
-    e.stopPropagation();
-    const droppedLink = await e.dataTransfer.getData("text/plain");
+    if (setListForLinkDrop !== "Select List") {
+      e.preventDefault();
+      e.stopPropagation();
+      const droppedLink = await e.dataTransfer.getData("text/plain");
 
-    setLinkToDrop(droppedLink);
-    addLinkToList();
+      setLinkToDrop(droppedLink);
+      addLinkToList();
+      setDropLinkContainerText("Dropped Link to" + listForLinkDrop);
+      setTimeout(() => {
+        setDropLinkContainerText("Drop Link");
+        setListForLinkDrop("Select List");
+      }, 2000);
+    }
   };
   useEffect(() => {
     fetchLists();
   });
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDraggingOver(true); // Set state to indicate dragging over
+  };
+
+  const handleDragLeave = () => {
+    setIsDraggingOver(false); // Set state to indicate dragging left
+  };
+
   const fetchLists = async () => {
     const response = await fetch(
       `http://localhost:3013/lists/${localStorage.getItem("userId")}`
@@ -66,12 +84,11 @@ const Sidebar = (props) => {
     <div className="sidebar">
       <div>
         <div
-          style={{
-            backgroundColor:
-              props.listsPageOpen == "My Lists" ? "white" : "black",
-            color: props.listsPageOpen == "My Lists" ? "black" : "white",
-          }}
-          className="sidebarMenuContainer"
+          className={
+            props.listsPageOpen == "My Lists"
+              ? "sidebarMenuContainerOpen"
+              : "sidebarMenuContainer"
+          }
           onClick={() => {
             props.setListOpen(false);
             props.setListsPageOpen("My Lists");
@@ -80,28 +97,27 @@ const Sidebar = (props) => {
           <h2 className="sidebarMenuText">My Lists</h2>
         </div>{" "}
         <div
-          className="sidebarMenuContainer"
+          className={
+            props.listsPageOpen == "Discover"
+              ? "sidebarMenuContainerOpen"
+              : "sidebarMenuContainer"
+          }
           onClick={() => {
             props.setListOpen(false);
             props.setListsPageOpen("Discover");
-          }}
-          style={{
-            backgroundColor:
-              props.listsPageOpen == "Discover" ? "white" : "black",
-            color: props.listsPageOpen == "Discover" ? "black" : "white",
           }}
         >
           <h2 className="sidebarMenuText">Discover</h2>
         </div>{" "}
         <div
-          className="sidebarMenuContainer"
+          className={
+            props.listsPageOpen == "Liked"
+              ? "sidebarMenuContainerOpen"
+              : "sidebarMenuContainer"
+          }
           onClick={() => {
             props.setListOpen(false);
             props.setListsPageOpen("Liked");
-          }}
-          style={{
-            backgroundColor: props.listsPageOpen == "Liked" ? "white" : "black",
-            color: props.listsPageOpen == "Liked" ? "black" : "white",
           }}
         >
           <h2 className="sidebarMenuText">Liked</h2>
@@ -121,18 +137,19 @@ const Sidebar = (props) => {
             {myLists.map((list) => {
               return <option>{list.list_name}</option>;
             })}
-            <option>cv</option>
-            <option>Benching Benches</option>
           </select>{" "}
         </div>
         <div
-          className="linkDropContainer"
-          onDragOver={(event) => {
-            event.preventDefault();
-          }}
+          className={
+            isDraggingOver
+              ? `linkDropContainerDraggingOver`
+              : `linkDropContainer`
+          }
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
           onDrop={handleDrop}
         >
-          Drop link{" "}
+          {dropLinkContainerText}{" "}
           {listForLinkDrop !== "Select List" && "to " + listForLinkDrop}
         </div>{" "}
       </div>
