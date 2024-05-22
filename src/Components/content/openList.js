@@ -15,6 +15,7 @@ const OpenList = (props) => {
   const [list, setList] = useState(null);
   const [addLinkInput, setAddLinkInput] = useState();
   const [commentInput, setCommentInput] = useState();
+  const [editCommentInput, setEditCommentInput] = useState();
   const [listType, setListType] = useState();
   const [shareText, setShareText] = useState("Share");
   const [commentEditing, setCommentEditing] = useState();
@@ -78,7 +79,34 @@ const OpenList = (props) => {
       alert("Failed to add link to the list. Please try again.");
     }
   };
-  const editComment = () => {};
+  async function editComment() {
+    try {
+      console.log({
+        username: localStorage.getItem("userId"),
+        oldComment: commentEditing,
+        newComment: editCommentInput,
+      });
+      const response = fetch(
+        `http://localhost:3013/lists/${list._id}/comments`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: localStorage.getItem("userId"),
+            oldComment: commentEditing,
+            newComment: editCommentInput,
+          }),
+        }
+      );
+
+      setCommentEditing();
+    } catch (error) {
+      console.error("Error editing comment:", error);
+      throw error;
+    }
+  }
   const calculateListType = () => {
     if (list) {
       if (list.links.length == 0) {
@@ -636,14 +664,21 @@ const OpenList = (props) => {
               return (
                 <div className="individualCommentContainer">
                   {comment.comment == commentEditing ? (
-                    <div>
-                      <input></input>
-                      <div onClick={deleteComment}>Delete</div>
-                      <div
-                        onClick={() => {
-                          setCommentEditing();
+                    <div className="editCommentContainer">
+                      <textarea
+                        value={editCommentInput}
+                        className="editCommentInput"
+                        onChange={(e) => {
+                          setEditCommentInput(e.target.value);
                         }}
+                      ></textarea>
+                      <div
+                        className="editCommentButton"
+                        onClick={deleteComment}
                       >
+                        Delete
+                      </div>
+                      <div className="editCommentButton" onClick={editComment}>
                         Done
                       </div>
                     </div>
@@ -659,6 +694,7 @@ const OpenList = (props) => {
                             className="commentDeleteText"
                             onClick={() => {
                               setCommentEditing(comment.comment);
+                              setEditCommentInput(comment.comment);
                             }}
                           >
                             ✎

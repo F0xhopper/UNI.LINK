@@ -121,7 +121,29 @@ const MyLists = (props) => {
     setLists(sortedLists);
     setSortingType("Most-Least Likes");
   };
+  const sortListsByDateReverse = () => {
+    const sortedLists = [...Lists].sort(
+      (a, b) => new Date(a.created_at) - new Date(b.created_at)
+    );
+    setLists(sortedLists);
+    setSortingType("Oldest-Newest");
+  };
 
+  const sortListsAlphabeticallyReverse = () => {
+    const sortedLists = [...Lists].sort((a, b) =>
+      b.list_name.localeCompare(a.list_name)
+    );
+    setLists(sortedLists);
+    setSortingType("Z-A");
+  };
+
+  const sortListsByLikesReverse = () => {
+    const sortedLists = [...Lists].sort(
+      (a, b) => a.likes.length - b.likes.length
+    );
+    setLists(sortedLists);
+    setSortingType("Least-Most Likes");
+  };
   return (
     <div>
       <div className="myListsCreateSearchSortContainer">
@@ -169,19 +191,40 @@ const MyLists = (props) => {
                 A-Z
               </h2>
             )}{" "}
+            {sortingType != "Z-A" && (
+              <h2
+                className="sortDropdownOptionText"
+                onClick={sortListsAlphabeticallyReverse}
+              >
+                Z-A
+              </h2>
+            )}{" "}
             {sortingType != "Newest-Oldest" && (
               <h2 className="sortDropdownOptionText" onClick={sortListsByDate}>
                 Newest-Oldest
               </h2>
             )}
-            <h2 className="sortDropdownOptionText">Oldest-Newest</h2>
+            {sortingType != "Oldest-Newest" && (
+              <h2
+                className="sortDropdownOptionText"
+                onClick={sortListsByDateReverse}
+              >
+                Oldest-Newests
+              </h2>
+            )}
             {sortingType != "Most-Least Likesnpm " && (
               <h2 className="sortDropdownOptionText" onClick={sortListsByLikes}>
                 Most-Least Likes
               </h2>
             )}
-            <h2 className="sortDropdownOptionText">Least-Most Likes</h2>
-            <h2 className="sortDropdownOptionText"></h2>
+            {sortingType != "Least-Most Likesnpm " && (
+              <h2
+                className="sortDropdownOptionText"
+                onClick={sortListsByLikesReverse}
+              >
+                Least-Most Likes
+              </h2>
+            )}
           </div>
         ) : (
           <div className="sortContainer">

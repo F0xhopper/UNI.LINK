@@ -3,9 +3,36 @@ import React, { useState, useEffect } from "react";
 const AccountSettings = (props) => {
   const [userData, setUserData] = useState({
     username: "",
+    email: "",
     password: "",
     confirmPassword: "",
+    profil_pic: "",
   });
+  const updateAccountDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3013/users/${localStorage.getItem("userId")}/update`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: userData.username,
+            email: userData.email,
+            password: userData.password,
+            profil_pic: userData.profil_pic,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to update list details");
+      }
+
+      // Reset form fields and display success message
+    } catch (error) {}
+  };
   function saveSettings() {
     const userId = localStorage.getItem("userId");
     let userDataCurrent;
@@ -88,6 +115,7 @@ const AccountSettings = (props) => {
         <div
           className="accountSettingsSaveButton"
           onClick={() => {
+            updateAccountDetails();
             saveSettings();
           }}
         >

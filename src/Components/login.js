@@ -7,6 +7,7 @@ const Login = (props) => {
   const [emailInput, setEmailInput] = useState();
   const [passwordInput, setPasswordInput] = useState();
   const [passwordConfirmInput, setPasswordConfirmInput] = useState();
+  const [passwordError, setPasswordError] = useState(false);
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -66,6 +67,10 @@ const Login = (props) => {
       } else {
         console.log("Failed to create user.");
       }
+      setUsernameInput("");
+      setPasswordInput("");
+      setEmailInput("");
+      setPasswordConfirmInput("");
     } catch (error) {
       console.error("Error creating user:", error);
       console.log("An error occurred. Please try again later.");
@@ -126,6 +131,10 @@ const Login = (props) => {
               onClick={() => {
                 createAccount();
                 setCreatingAccount(!creatingAccount);
+                setUsernameInput("");
+                setPasswordInput("");
+                setEmailInput("");
+                setPasswordConfirmInput("");
               }}
             >
               Create Account
@@ -163,6 +172,10 @@ const Login = (props) => {
               className="createAccountButton"
               onClick={() => {
                 setCreatingAccount(!creatingAccount);
+                setUsernameInput("");
+                setPasswordInput("");
+                setEmailInput("");
+                setPasswordConfirmInput("");
               }}
             >
               Create Account
