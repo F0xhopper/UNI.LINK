@@ -6,7 +6,7 @@ const AccountSettings = (props) => {
     email: "",
     password: "",
     confirmPassword: "",
-    profil_pic: "",
+    profile_pic: "",
   });
   const updateAccountDetails = async () => {
     try {
@@ -21,7 +21,7 @@ const AccountSettings = (props) => {
             username: userData.username,
             email: userData.email,
             password: userData.password,
-            profil_pic: userData.profil_pic,
+            profile_pic: userData.profile_pic,
           }),
         }
       );
@@ -56,6 +56,19 @@ const AccountSettings = (props) => {
       });
     props.setAccountSettingsOpen(false);
   }
+  const handleImageChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      setUserData({ ...userData, profile_pic: reader.result });
+      // Set the data URL
+    };
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  };
   useEffect(() => {
     function getAccountDetails() {
       const userId = localStorage.getItem("userId");
@@ -68,7 +81,8 @@ const AccountSettings = (props) => {
           setUserData({
             ...userData,
             username: data.username,
-            password: data.password, // Assuming username is provided in the response
+            password: data.password,
+            profile_pic: data.profile_pic, // Assuming username is provided in the response
           });
         })
         .catch((error) => console.error("Failed to fetch user data:", error));
@@ -80,46 +94,81 @@ const AccountSettings = (props) => {
 
   return (
     <div className="changeAccountSettingsContainer">
-      <div className="accountSettingsInputNameContainer">
-        <div className="accountSettingsInputName">Username</div>
-        <input
-          className="accountSettingsInput"
-          value={userData.username} // Set input value to the fetched username
-          onChange={(e) =>
-            setUserData({ ...userData, username: e.target.value })
-          } // Update username in state on input change
-        />
+      <div className="changeAccountSettingsProfilePicInputContainer">
+        <div className="changeAccountSettingsProfilePictureContainer">
+          <img
+            className="changeAccountSettingsProfilePictureImage"
+            src={userData.profile_pic}
+          ></img>{" "}
+          <div
+            class=""
+            style={{
+              opacity: userData.profile_pic == "" && "1",
+            }}
+          >
+            <label
+              htmlFor="listImage"
+              style={{ opacity: !userData.profile_pic && "1" }}
+              className="changeAccountSettingsProfilePictureOverlayText"
+            >
+              {userData.profile_pic == ""
+                ? "Add profile pic"
+                : "Change profile pic"}
+              <input
+                className="changeAccountSettingsProfilePictureImageInput"
+                id="listImage"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange} // Handle image upload
+              />
+            </label>
+          </div>
+        </div>
       </div>
-      <div className="accountSettingsInputNameContainer">
-        <div className="accountSettingsInputName">Password</div>
-        <input
-          className="accountSettingsInput"
-          value={userData.password} // Set input value to the fetched password
-          onChange={(e) =>
-            setUserData({ ...userData, password: e.target.value })
-          } // Update password in state on input change
-        />
-      </div>
-      <div className="accountSettingsInputNameContainer">
-        <div className="accountSettingsInputName">Confirm Password Change</div>
-        <input
-          className="accountSettingsInput"
-          value={userData.confirmPassword} // Set input value to the fetched confirm password
-          onChange={(e) =>
-            setUserData({ ...userData, confirmPassword: e.target.value })
-          } // Update confirm password in state on input change
-        />
-      </div>
-      <div className="accountSettingsButtonContainer">
-        <div className="accountSettingsDeleteButton">Delete Account</div>
-        <div
-          className="accountSettingsSaveButton"
-          onClick={() => {
-            updateAccountDetails();
-            saveSettings();
-          }}
-        >
-          Save Settings
+      <div className="changeAccountSettingsTextInputsContainer">
+        <div className="accountSettingsInputNameContainer">
+          <div className="accountSettingsInputName">Username</div>
+          <input
+            className="accountSettingsInput"
+            value={userData.username} // Set input value to the fetched username
+            onChange={(e) =>
+              setUserData({ ...userData, username: e.target.value })
+            } // Update username in state on input change
+          />
+        </div>
+        <div className="accountSettingsInputNameContainer">
+          <div className="accountSettingsInputName">Password</div>
+          <input
+            className="accountSettingsInput"
+            value={userData.password} // Set input value to the fetched password
+            onChange={(e) =>
+              setUserData({ ...userData, password: e.target.value })
+            } // Update password in state on input change
+          />
+        </div>
+        <div className="accountSettingsInputNameContainer">
+          <div className="accountSettingsInputName">
+            Confirm Password Change
+          </div>
+          <input
+            className="accountSettingsInput"
+            value={userData.confirmPassword} // Set input value to the fetched confirm password
+            onChange={(e) =>
+              setUserData({ ...userData, confirmPassword: e.target.value })
+            } // Update confirm password in state on input change
+          />
+        </div>
+        <div className="accountSettingsButtonContainer">
+          <div className="accountSettingsDeleteButton">Delete Account</div>
+          <div
+            className="accountSettingsSaveButton"
+            onClick={() => {
+              updateAccountDetails();
+              saveSettings();
+            }}
+          >
+            Save Settings
+          </div>
         </div>
       </div>
     </div>

@@ -11,9 +11,9 @@ const Sidebar = (props) => {
       e.preventDefault();
       e.stopPropagation();
       const droppedLink = await e.dataTransfer.getData("text/plain");
-
+      console.log(droppedLink);
       setLinkToDrop(droppedLink);
-      addLinkToList();
+      addLinkToList(droppedLink);
       setDropLinkContainerText("Dropped Link to" + listForLinkDrop);
       setTimeout(() => {
         setDropLinkContainerText("Drop Link");
@@ -43,7 +43,7 @@ const Sidebar = (props) => {
     const data = await response.json();
     setMyLists(data);
   };
-  const addLinkToList = async () => {
+  const addLinkToList = async (link) => {
     try {
       const responseId = await fetch(
         `http://localhost:3013/lists/${listForLinkDrop}/id`
@@ -53,7 +53,7 @@ const Sidebar = (props) => {
       console.log(data1);
       console.log(linkToDrop);
 
-      const secondResponse = await fetch(
+      const response = await fetch(
         `http://localhost:3013/lists/${data1.listId}/links`,
         {
           method: "POST",
@@ -61,18 +61,18 @@ const Sidebar = (props) => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            link_name: "Name of the Link",
-            link_url: linkToDrop,
-            platform: "Platform Name",
+            link_name: "Name of the Link", // Replace with actual values
+            link_url: link,
+            link_type: "Video",
           }),
         }
       );
 
-      if (!secondResponse.ok) {
+      if (!response.ok) {
         throw new Error("Failed to add link to the list");
       }
 
-      const responseData = await secondResponse.json();
+      const responseData = await response.json();
       console.log("Link added:", responseData.message);
     } catch (error) {
       console.error("Error adding link to the list:", error);
@@ -146,7 +146,7 @@ const Sidebar = (props) => {
               : `linkDropContainer`
           }
           onDragOver={handleDragOver}
-          onDragLeave={handleDragLeave}
+          onMouseLeave={handleDragLeave}
           onDrop={handleDrop}
         >
           {dropLinkContainerText}{" "}

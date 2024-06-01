@@ -3,14 +3,46 @@ import logo from "/Users/edenphillips/Desktop/Projects/uni.listv2/src/Images/UNI
 
 const Login = (props) => {
   const [creatingAccount, setCreatingAccount] = useState(false);
-  const [usernameInput, setUsernameInput] = useState();
-  const [emailInput, setEmailInput] = useState();
-  const [passwordInput, setPasswordInput] = useState();
-  const [passwordConfirmInput, setPasswordConfirmInput] = useState();
+  const [usernameInput, setUsernameInput] = useState("");
+  const [emailInput, setEmailInput] = useState("");
+  const [passwordInput, setPasswordInput] = useState("");
+  const [passwordConfirmInput, setPasswordConfirmInput] = useState("");
   const [passwordError, setPasswordError] = useState(false);
+  const [loginPasswordPlaceholder, setLoginPasswordPlaceholder] =
+    useState("Password");
+  const [loginUsernamePlaceholder, setLoginUsernamePlaceholder] =
+    useState("Username");
+  const [createUsernamePlaceholder, setCreateUsernamePlaceholder] =
+    useState("Username");
+  const [createPasswordPlaceholder, setCreatePasswordPlaceholder] =
+    useState("Password");
+  const [createEmailPlaceholder, setCreateEmailPlaceholder] = useState("Email");
+  const [
+    createPasswordConfirmPlaceholder,
+    setCreatePasswordConfirmPlaceholder,
+  ] = useState("Confirm Password");
+  const [redPlaceholderText, setRedPlaceholderText] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      if (!usernameInput || !passwordInput) {
+        setLoginUsernamePlaceholder("Please fill in all fields");
+
+        setLoginPasswordPlaceholder("Please fill in all fields");
+        setRedPlaceholderText(true);
+        setUsernameInput("");
+        setPasswordInput("");
+        setTimeout(() => {
+          setRedPlaceholderText(false);
+
+          setLoginUsernamePlaceholder("Username");
+          setLoginPasswordPlaceholder("Password");
+        }, 4000);
+        console.log("Please fill in all fields.");
+        return;
+      }
+
       const response = await fetch("http://localhost:3013/login", {
         method: "POST",
         headers: {
@@ -21,8 +53,19 @@ const Login = (props) => {
           password: passwordInput,
         }),
       });
+      setUsernameInput("");
+      setPasswordInput("");
       if (!response.ok) {
-        throw new Error("Invalid username or password");
+        setLoginPasswordPlaceholder("Incorrect username or password");
+        setRedPlaceholderText(true);
+        setLoginUsernamePlaceholder("Incorrect username or password");
+        setTimeout(() => {
+          setRedPlaceholderText(false);
+          setLoginUsernamePlaceholder("Username");
+          setLoginPasswordPlaceholder("Password");
+        }, 4000);
+
+        throw new Error("Incorrect username or password");
       }
       const data = await response.json();
       console.log(data); // Assuming the response contains userId
@@ -30,12 +73,12 @@ const Login = (props) => {
 
       props.setLoggedIn(true);
     } catch (error) {
-      // Handle errors, e.g., display an error message to the user
       console.error("Login failed:", error.message);
-      // Set state to display error message on the UI
     }
   };
+
   const createAccount = async (e) => {
+    e.preventDefault();
     try {
       if (
         !usernameInput ||
@@ -43,10 +86,30 @@ const Login = (props) => {
         !passwordInput ||
         !passwordConfirmInput
       ) {
+        setCreateUsernamePlaceholder("Please fill in all fields");
+        setCreatePasswordPlaceholder("Please fill in all fields");
+        setCreatePasswordConfirmPlaceholder("Please fill in all fields");
+        setCreateEmailPlaceholder("Please fill in all fields");
+        setRedPlaceholderText(true);
+        setTimeout(() => {
+          setRedPlaceholderText(false);
+          setCreateUsernamePlaceholder("Username");
+          setCreatePasswordPlaceholder("Password");
+          setCreatePasswordConfirmPlaceholder("Confirm Password");
+          setCreateEmailPlaceholder("Email");
+        }, 4000);
         console.log("Please fill in all fields.");
         return;
       }
       if (passwordInput !== passwordConfirmInput) {
+        setCreatePasswordPlaceholder("Passwords do not match");
+        setCreatePasswordConfirmPlaceholder("Passwords do not match");
+        setRedPlaceholderText(true);
+        setTimeout(() => {
+          setRedPlaceholderText(false);
+          setCreatePasswordPlaceholder("Password");
+          setCreatePasswordConfirmPlaceholder("Confirm Password");
+        }, 4000);
         console.log("Passwords do not match.");
         return;
       }
@@ -59,11 +122,11 @@ const Login = (props) => {
           username: usernameInput,
           email: emailInput,
           password: passwordInput,
+          profile_pic: "",
         }),
       });
       if (response.ok) {
         console.log("User created successfully!");
-        // Optionally, reset the form fields after successful submission
       } else {
         console.log("Failed to create user.");
       }
@@ -76,20 +139,23 @@ const Login = (props) => {
       console.log("An error occurred. Please try again later.");
     }
   };
+
   return (
     <div className="loginMainContainer">
-      <img src={logo} className="loginLogoImage"></img>
+      <img src={logo} className="loginLogoImage" alt="logo" />
       {creatingAccount ? (
         <div>
           <div>
             <input
               value={usernameInput}
-              className="usernameInput"
+              className={`usernameInput ${
+                redPlaceholderText && "placeholder-red"
+              }`}
               onChange={(e) => {
                 setUsernameInput(e.target.value);
               }}
-              placeholder="Username"
-            ></input>
+              placeholder={createUsernamePlaceholder}
+            />
           </div>
           <div>
             <input
@@ -97,19 +163,23 @@ const Login = (props) => {
               onChange={(e) => {
                 setEmailInput(e.target.value);
               }}
-              className="emailInput"
-              placeholder="Email"
-            ></input>
-          </div>{" "}
+              className={`emailInput ${
+                redPlaceholderText && "placeholder-red"
+              }`}
+              placeholder={createEmailPlaceholder}
+            />
+          </div>
           <div>
             <input
               value={passwordInput}
               onChange={(e) => {
                 setPasswordInput(e.target.value);
               }}
-              className="passwordInput"
-              placeholder="Password"
-            ></input>
+              className={`passwordInput ${
+                redPlaceholderText && "placeholder-red"
+              }`}
+              placeholder={createPasswordPlaceholder}
+            />
           </div>
           <div>
             <input
@@ -117,20 +187,18 @@ const Login = (props) => {
               onChange={(e) => {
                 setPasswordConfirmInput(e.target.value);
               }}
-              className="passwordInputError"
-              placeholder="Confirm Password"
-            ></input>
+              className={`passwordInput ${
+                redPlaceholderText && "placeholder-red"
+              }`}
+              placeholder={createPasswordConfirmPlaceholder}
+            />
           </div>
-          <div
-            style={{
-              display: "flex",
-            }}
-          >
+          <div style={{ display: "flex" }}>
             <div
               className="createAccountButton"
-              onClick={() => {
-                createAccount();
-                setCreatingAccount(!creatingAccount);
+              onClick={(e) => {
+                createAccount(e);
+
                 setUsernameInput("");
                 setPasswordInput("");
                 setEmailInput("");
@@ -149,9 +217,11 @@ const Login = (props) => {
               onChange={(e) => {
                 setUsernameInput(e.target.value);
               }}
-              className="usernameInput"
-              placeholder="Username or Email"
-            ></input>
+              className={`usernameInput ${
+                redPlaceholderText && "placeholder-red"
+              }`}
+              placeholder={loginUsernamePlaceholder}
+            />
           </div>
           <div>
             <input
@@ -159,15 +229,13 @@ const Login = (props) => {
               onChange={(e) => {
                 setPasswordInput(e.target.value);
               }}
-              className="passwordInput"
-              placeholder="Password"
-            ></input>
+              className={`passwordInput ${
+                redPlaceholderText && "placeholder-red"
+              }`}
+              placeholder={loginPasswordPlaceholder}
+            />
           </div>
-          <div
-            style={{
-              display: "flex",
-            }}
-          >
+          <div style={{ display: "flex" }}>
             <div
               className="createAccountButton"
               onClick={() => {
@@ -181,7 +249,6 @@ const Login = (props) => {
               Create Account
             </div>
             <div className="LogInButton" onClick={handleSubmit}>
-              {" "}
               Log In
             </div>
           </div>
