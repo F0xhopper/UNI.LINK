@@ -15,4 +15,16 @@ Tech Stack
 
 Usage
 
+Clone the repository:
 
+git clone https://github.com/F0xhopper/UNI.LINK
+
+cd UNI.LINK
+
+Install the required dependencies:
+
+npm install
+
+Run frontend application: 
+
+npm run start
