@@ -117,6 +117,7 @@ const MyLists = (props) => {
     );
     setLists(sortedLists);
     setSortingType("Newest-Oldest");
+    setSortDropdownVisible(false);
   };
 
   const sortListsAlphabetically = () => {
@@ -125,6 +126,7 @@ const MyLists = (props) => {
     );
     setLists(sortedLists);
     setSortingType("A-Z");
+    setSortDropdownVisible(false);
   };
 
   const sortListsByLikes = () => {
@@ -133,6 +135,7 @@ const MyLists = (props) => {
     );
     setLists(sortedLists);
     setSortingType("Most-Least Likes");
+    setSortDropdownVisible(false);
   };
 
   const sortListsByDateReverse = () => {
@@ -141,6 +144,7 @@ const MyLists = (props) => {
     );
     setLists(sortedLists);
     setSortingType("Oldest-Newest");
+    setSortDropdownVisible(false);
   };
 
   const sortListsAlphabeticallyReverse = () => {
@@ -149,6 +153,7 @@ const MyLists = (props) => {
     );
     setLists(sortedLists);
     setSortingType("Z-A");
+    setSortDropdownVisible(false);
   };
 
   const sortListsByLikesReverse = () => {
@@ -157,6 +162,7 @@ const MyLists = (props) => {
     );
     setLists(sortedLists);
     setSortingType("Least-Most Likes");
+    setSortDropdownVisible(false);
   };
 
   return (
