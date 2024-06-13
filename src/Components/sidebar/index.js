@@ -35,7 +35,9 @@ const Sidebar = (props) => {
 
   const fetchLists = async () => {
     const response = await fetch(
-      `http://localhost:3013/lists/${localStorage.getItem("userId")}`
+      `https://uni-link-api-with-ssl.onrender.com/lists/${localStorage.getItem(
+        "userId"
+      )}`
     );
     if (!response.ok) {
       throw new Error("Failed to fetch lists");
@@ -46,7 +48,7 @@ const Sidebar = (props) => {
   const addLinkToList = async (link) => {
     try {
       const responseId = await fetch(
-        `http://localhost:3013/lists/${listForLinkDrop}/id`
+        `https://uni-link-api-with-ssl.onrender.com/lists/${listForLinkDrop}/id`
       );
       const data1 = await responseId.json();
 
@@ -54,7 +56,7 @@ const Sidebar = (props) => {
       console.log(linkToDrop);
 
       const response = await fetch(
-        `http://localhost:3013/lists/${data1.listId}/links`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${data1.listId}/links`,
         {
           method: "POST",
           headers: {

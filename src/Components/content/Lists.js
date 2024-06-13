@@ -9,19 +9,24 @@ const MyLists = (props) => {
   const [sortingType, setSortingType] = useState("Sorting");
 
   useEffect(() => {
-    setLists(null);
+    setLists();
     fetchLists();
-    console.log("got" + Lists);
   }, [props.listsPageOpen]);
+
+  useEffect(() => {
+    handleSearch();
+  }, [searchInput]);
 
   const fetchLists = async () => {
     let apiUrl;
     if (props.listsPageOpen === "My Lists") {
-      apiUrl = `http://localhost:3013/lists/${localStorage.getItem("userId")}`;
+      apiUrl = `https://uni-link-api-with-ssl.onrender.com/lists/${localStorage.getItem(
+        "userId"
+      )}`;
     } else if (props.listsPageOpen === "Discover") {
-      apiUrl = "http://localhost:3013/listss/public";
+      apiUrl = "https://uni-link-api-with-ssl.onrender.com/listss/public";
     } else if (props.listsPageOpen === "Liked") {
-      apiUrl = `http://localhost:3013/lists/liked/${localStorage.getItem(
+      apiUrl = `https://uni-link-api-with-ssl.onrender.com/lists/liked/${localStorage.getItem(
         "userId"
       )}`;
     }
@@ -47,23 +52,25 @@ const MyLists = (props) => {
       console.error("Error fetching lists:", error);
     }
   };
+
   const calculateListType = (list) => {
     if (list) {
-      if (list.links.length == 0) {
+      if (list.links.length === 0) {
         return "";
-      } else if (list.links.every((link) => link.link_type == "Video")) {
+      } else if (list.links.every((link) => link.link_type === "Video")) {
         return "▶︎";
-      } else if (list.links.every((link) => link.link_type == "Informative")) {
+      } else if (list.links.every((link) => link.link_type === "Informative")) {
         return "📓";
-      } else if (list.links.every((link) => link.link_type == "Song")) {
+      } else if (list.links.every((link) => link.link_type === "Song")) {
         return "♫";
-      } else if (list.links.every((link) => link.link_type == "Item")) {
+      } else if (list.links.every((link) => link.link_type === "Item")) {
         return "🧺";
       } else {
         return "∞";
       }
     }
   };
+
   const isLiked = (list) => {
     if (list.likes.includes(localStorage.getItem("userId"))) {
       return "♥";
@@ -71,23 +78,28 @@ const MyLists = (props) => {
       return "♡";
     }
   };
+
   const handleSearch = () => {
     if (searchInput.trim() !== "") {
-      const filteredLists = originalLists.filter(
-        (list) =>
+      const filteredLists = originalLists.filter((list) => {
+        return (
           list.list_name.toLowerCase().includes(searchInput.toLowerCase()) ||
           list.list_description
-            .toLowerCase()
+            ?.toLowerCase()
             .includes(searchInput.toLowerCase())
-      );
+        );
+      });
       setLists(filteredLists);
     } else {
       setLists(originalLists);
     }
   };
+
   const fetchUserName = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3013/users/${userId}`);
+      const response = await fetch(
+        `https://uni-link-api-with-ssl.onrender.com/users/${userId}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
@@ -98,6 +110,7 @@ const MyLists = (props) => {
       return ""; // Return empty string if user data fetching fails
     }
   };
+
   const sortListsByDate = () => {
     const sortedLists = [...Lists].sort(
       (a, b) => new Date(b.created_at) - new Date(a.created_at)
@@ -121,6 +134,7 @@ const MyLists = (props) => {
     setLists(sortedLists);
     setSortingType("Most-Least Likes");
   };
+
   const sortListsByDateReverse = () => {
     const sortedLists = [...Lists].sort(
       (a, b) => new Date(a.created_at) - new Date(b.created_at)
@@ -144,6 +158,7 @@ const MyLists = (props) => {
     setLists(sortedLists);
     setSortingType("Least-Most Likes");
   };
+
   return (
     <div>
       <div className="myListsCreateSearchSortContainer">
@@ -159,11 +174,18 @@ const MyLists = (props) => {
           </div>
           <input
             className="searchBarInput"
+            placeholder="Search"
             onChange={(e) => setSearchInput(e.target.value)}
+            value={searchInput}
           ></input>
-          <div className="searchBarButton">
-            <h2 className="searchBarButtonText" onClick={handleSearch}>
-              Search
+          <div className="searchBarClearButton">
+            <h2
+              className="searchBarButtonText"
+              onClick={() => {
+                setSearchInput("");
+              }}
+            >
+              Clear
             </h2>
           </div>
         </div>
@@ -174,7 +196,6 @@ const MyLists = (props) => {
               <img
                 className="sortdownArrowImage"
                 onClick={() => {
-                  console.log(Lists);
                   setSortDropdownVisible(!sortDropdownVisible);
                 }}
                 style={{
@@ -183,7 +204,7 @@ const MyLists = (props) => {
                 src={downArrow}
               ></img>
             </div>
-            {sortingType != "A-Z" && (
+            {sortingType !== "A-Z" && (
               <h2
                 className="sortDropdownOptionText"
                 onClick={sortListsAlphabetically}
@@ -191,7 +212,7 @@ const MyLists = (props) => {
                 A-Z
               </h2>
             )}{" "}
-            {sortingType != "Z-A" && (
+            {sortingType !== "Z-A" && (
               <h2
                 className="sortDropdownOptionText"
                 onClick={sortListsAlphabeticallyReverse}
@@ -199,12 +220,12 @@ const MyLists = (props) => {
                 Z-A
               </h2>
             )}{" "}
-            {sortingType != "Newest-Oldest" && (
+            {sortingType !== "Newest-Oldest" && (
               <h2 className="sortDropdownOptionText" onClick={sortListsByDate}>
                 Newest-Oldest
               </h2>
             )}
-            {sortingType != "Oldest-Newest" && (
+            {sortingType !== "Oldest-Newest" && (
               <h2
                 className="sortDropdownOptionText"
                 onClick={sortListsByDateReverse}
@@ -212,12 +233,12 @@ const MyLists = (props) => {
                 Oldest-Newests
               </h2>
             )}
-            {sortingType != "Most-Least Likesnpm " && (
+            {sortingType !== "Most-Least Likes" && (
               <h2 className="sortDropdownOptionText" onClick={sortListsByLikes}>
                 Most-Least Likes
               </h2>
             )}
-            {sortingType != "Least-Most Likesnpm " && (
+            {sortingType !== "Least-Most Likes" && (
               <h2
                 className="sortDropdownOptionText"
                 onClick={sortListsByLikesReverse}

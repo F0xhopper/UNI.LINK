@@ -53,7 +53,7 @@ const OpenList = (props) => {
       }
 
       const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/links`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/links`,
         {
           method: "POST",
           headers: {
@@ -87,7 +87,7 @@ const OpenList = (props) => {
         newComment: editCommentInput,
       });
       const response = fetch(
-        `http://localhost:3013/lists/${list._id}/comments`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/comments`,
         {
           method: "PUT",
           headers: {
@@ -127,7 +127,7 @@ const OpenList = (props) => {
   const addLikeToList = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/like`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/like`,
         {
           method: "POST",
           headers: {
@@ -158,7 +158,7 @@ const OpenList = (props) => {
     if (!props.creatingList) {
       try {
         const response = await fetch(
-          `http://localhost:3013/lists/${list._id}/edit`,
+          `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/edit`,
           {
             method: "PUT",
             headers: {
@@ -184,7 +184,7 @@ const OpenList = (props) => {
   const deleteComment = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/comments`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/comments`,
         {
           method: "DELETE",
           headers: {
@@ -210,7 +210,7 @@ const OpenList = (props) => {
   const deleteList = async (listId) => {
     try {
       const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/delete`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/delete`,
         {
           method: "DELETE",
         }
@@ -234,9 +234,9 @@ const OpenList = (props) => {
     try {
       console.log(linkUrl, list._id);
       const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/links/${encodeURIComponent(
-          linkUrl
-        )}`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${
+          list._id
+        }/links/${encodeURIComponent(linkUrl)}`,
         {
           method: "DELETE",
           headers: {
@@ -259,7 +259,7 @@ const OpenList = (props) => {
   const addCommentToList = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3013/lists/${list._id}/comments`,
+        `https://uni-link-api-with-ssl.onrender.com/lists/${list._id}/comments`,
         {
           method: "POST",
           headers: {
@@ -288,23 +288,26 @@ const OpenList = (props) => {
   const createList = async (event) => {
     if (props.creatingList) {
       try {
-        const response = await fetch("http://localhost:3013/lists", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: localStorage.getItem("userId"),
-            list_name: listNameInput,
-            list_description: listDescriptionInput,
-            list_public: listPublic,
-            image: imageDataUrl,
-            created_at: new Date().toISOString().slice(0, 10),
-            comments: [],
-            likes: [],
-            links: [],
-          }),
-        });
+        const response = await fetch(
+          "https://uni-link-api-with-ssl.onrender.com/lists",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              userId: localStorage.getItem("userId"),
+              list_name: listNameInput,
+              list_description: listDescriptionInput,
+              list_public: listPublic,
+              image: imageDataUrl,
+              created_at: new Date().toISOString().slice(0, 10),
+              comments: [],
+              likes: [],
+              links: [],
+            }),
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to create list");
@@ -323,7 +326,9 @@ const OpenList = (props) => {
   };
   const fetchUserName = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:3013/users/${userId}`);
+      const response = await fetch(
+        `https://uni-link-api-with-ssl.onrender.com/users/${userId}`
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch user data");
       }
@@ -338,7 +343,7 @@ const OpenList = (props) => {
     const fetchListData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3013/list/${props.listOpen}`
+          `https://uni-link-api-with-ssl.onrender.com/list/${props.listOpen}`
         ); // Change the URL according to your backend API
         if (!response.ok) {
           throw new Error("Failed to fetch user list");

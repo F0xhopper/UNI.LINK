@@ -15,7 +15,7 @@ const Header = (props) => {
     const userId = localStorage.getItem("userId");
 
     // Fetch user data based on user ID
-    fetch(`http://localhost:3013/users/${userId}`)
+    fetch(`https://uni-link-api-with-ssl.onrender.com/users/${userId}`)
       .then((response) => response.json())
       .then((data) => setUser(data))
       .catch((error) => console.error("Failed to fetch user data:", error));
@@ -30,7 +30,7 @@ const Header = (props) => {
         <div className="userAccountContainer">
           <img
             className="profilePictureCircle"
-            src={user ? user.profile_pic : profilePicture}
+            src={user?.profile_pic ? user.profile_pic : profilePicture}
           ></img>
           <img
             className="userDownArrowImage"
@@ -45,7 +45,7 @@ const Header = (props) => {
           <div className="userAccountDropdownNameArrowContainer">
             <img
               className="profilePictureCircle"
-              src={user ? user.profile_pic : profilePicture}
+              src={user?.profile_pic ? user.profile_pic : profilePicture}
             ></img>
 
             <h2 className="usernameText">{user.username && user.username}</h2>

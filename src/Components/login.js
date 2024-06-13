@@ -43,16 +43,19 @@ const Login = (props) => {
         return;
       }
 
-      const response = await fetch("http://localhost:3013/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: usernameInput,
-          password: passwordInput,
-        }),
-      });
+      const response = await fetch(
+        "https://uni-link-api-with-ssl.onrender.com/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: usernameInput,
+            password: passwordInput,
+          }),
+        }
+      );
       setUsernameInput("");
       setPasswordInput("");
       if (!response.ok) {
@@ -113,23 +116,31 @@ const Login = (props) => {
         console.log("Passwords do not match.");
         return;
       }
-      const response = await fetch("http://localhost:3013/users", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: usernameInput,
-          email: emailInput,
-          password: passwordInput,
-          profile_pic: "",
-        }),
-      });
+      const response = await fetch(
+        "https://uni-link-api-with-ssl.onrender.com/users",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username: usernameInput,
+            email: emailInput,
+            password: passwordInput,
+            profile_pic: "",
+            theme: {
+              themeDisplayName: "Dark",
+              themeClass: "darkTheme ",
+            },
+          }),
+        }
+      );
       if (response.ok) {
         console.log("User created successfully!");
       } else {
         console.log("Failed to create user.");
       }
+      setCreatingAccount(false);
       setUsernameInput("");
       setPasswordInput("");
       setEmailInput("");

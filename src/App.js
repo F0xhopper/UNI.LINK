@@ -15,6 +15,7 @@ function App() {
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const [listOpen, setListOpen] = useState();
   const [listsPageOpen, setListsPageOpen] = useState("My Lists");
+  const [loggedInAccountDetails, setLoggedInAccountDetails] = useState();
   useEffect(() => {
     // Check if user ID is stored in local storage
     const userId = localStorage.getItem("userId");
@@ -25,7 +26,17 @@ function App() {
       loginUser(userId);
     }
   }, []);
+  useEffect(() => {
+    // Retrieve user ID from localStorage
+    const userId = localStorage.getItem("userId");
 
+    if (userId) {
+      fetch(`https://uni-link-api-with-ssl.onrender.com/users/${userId}`)
+        .then((response) => response.json())
+        .then((data) => setLoggedInAccountDetails(data))
+        .catch((error) => console.error("Failed to fetch user data:", error));
+    }
+  }, [accountSettingsOpen]);
   // Function to log in the user
   const loginUser = (userId) => {
     // Perform login logic using the provided user ID
@@ -35,7 +46,11 @@ function App() {
 
   return (
     <Router>
-      <div className="App">
+      <div
+        className={`App ${
+          loggedInAccountDetails && loggedInAccountDetails.theme.themeClass
+        } `}
+      >
         <Routes>
           <Route
             path="/"
